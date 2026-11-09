@@ -1,0 +1,73 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Privacy Policy – Sitewright{% endblock %}
+{% block meta_desc %}Privacy Policy and Data Protection Notice under India's Digital Personal Data Protection (DPDP) Act 2023 for Sitewright.{% endblock %}
+
+{% block content %}
+<div class="wrap" style="padding-top: 48px; padding-bottom: 96px; max-width: 860px; margin: 0 auto;">
+  <header style="margin-bottom: 36px;">
+    <span class="section-tag">// Data Protection & Privacy</span>
+    <h1 style="font-size: 36px; font-weight: 800; margin-top: 8px; color: var(--ink-heading);">Privacy Policy</h1>
+    <p style="color: var(--muted); font-size: 15px; margin-top: 6px;">Last Updated: November 2026 • Compliant with Digital Personal Data Protection (DPDP) Act, 2023 (India)</p>
+  </header>
+
+  <article class="cult-card" style="padding: 36px; line-height: 1.7; font-size: 15px; color: var(--ink); display: flex; flex-direction: column; gap: 24px;">
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">1. Introduction & Scope</h2>
+      <p>I value your privacy and believe in complete transparency. This privacy policy outlines how I, {{ developer_name }} ("Sitewright"), collect, process, and protect your personal information when you use this website (<a href="/" style="color: #60a5fa;">sitewright.ai</a>) or submit a project quote request.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">2. Data Collected & Grounds for Collection</h2>
+      <p>I only collect personal information that you voluntarily choose to provide via the contact and quote forms. This includes:</p>
+      <ul style="padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <li><strong>Identity & Contact Details:</strong> Your name, email address, and/or WhatsApp/phone number.</li>
+        <li><strong>Project Details:</strong> Business name, project requirements, budget plan selection, and design notes.</li>
+        <li><strong>Technical Information:</strong> IP address for server security and atomic brute-force rate limiting (not tied to marketing profiles).</li>
+      </ul>
+      <p style="margin-top: 10px;">The lawful basis for processing this data is your explicit consent when requesting a quote and my legitimate interest in communicating regarding your web development project.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">3. Purpose of Processing</h2>
+      <p>Your details are used strictly for:</p>
+      <ul style="padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <li>Reviewing your website requirements and drafting tailored project proposals.</li>
+        <li>Communicating with you directly via email, phone, or WhatsApp regarding your inquiry.</li>
+        <li>Maintaining website security and preventing automated spam or malicious bot submissions.</li>
+      </ul>
+      <p style="margin-top: 10px;">I do not sell, rent, or trade your personal data to any advertisers, data brokers, or third parties.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">4. Data Storage & Retention</h2>
+      <p>Your data is stored in secure, access-controlled databases. Inactive inquiries are purged periodically. If we do not proceed with a project, you can request immediate removal of your record at any time.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">5. Your Rights Under the DPDP Act (India)</h2>
+      <p>Under India's Digital Personal Data Protection Act, 2023, you hold the following rights regarding your personal data:</p>
+      <ul style="padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <li><strong>Right to Access:</strong> Request a summary of the personal information stored about you.</li>
+        <li><strong>Right to Correction:</strong> Request updates or corrections to outdated or inaccurate information.</li>
+        <li><strong>Right to Erasure (Right to be Forgotten):</strong> Request the permanent deletion of your contact data from the records.</li>
+        <li><strong>Right of Grievance Redressal:</strong> Direct any privacy-related concern to me personally.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">6. Contact for Grievances & Deletion Requests</h2>
+      <p>To exercise any of your data rights or request immediate deletion of your contact records, please email me directly with the subject line <em>"Data Deletion Request"</em> at:</p>
+      <p style="margin-top: 8px;">
+        <strong>Email:</strong> <a href="mailto:{{ contact_email }}" style="color: #60a5fa; text-decoration: underline;">{{ contact_email }}</a><br>
+        <strong>Location:</strong> {{ developer_city }}
+      </p>
+    </section>
+  </article>
+
+  <div style="margin-top: 32px; text-align: center;">
+    <a href="{% url 'core:index' %}" class="btn btn-ghost btn-sm">← Back to Homepage</a>
+  </div>
+</div>
+{% endblock %}
+

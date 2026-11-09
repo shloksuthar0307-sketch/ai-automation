@@ -1,0 +1,173 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="cult">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>{% block title %}{{ developer_name }} – Freelance Full-Stack Developer | Sitewright{% endblock %}</title>
+<meta name="description" content="{% block meta_description %}I build fast, high-converting websites and automations for clinics, restaurants, coaching classes, and local businesses in India. Live in about a week.{% endblock %}">
+<meta name="theme-color" content="#09090b">
+<link rel="canonical" href="{{ request.build_absolute_uri }}">
+
+<!-- Favicon (Cult UI Monochrome Geometric Gem) -->
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2309090b'/><path d='M12 4L4 12l8 8 8-8z' fill='%23ffffff'/></svg>">
+
+<!-- Open Graph / Facebook -->
+<meta property="og:type" content="website">
+<meta property="og:url" content="{{ request.build_absolute_uri }}">
+<meta property="og:title" content="{% block og_title %}{{ developer_name }} – Freelance Full-Stack Developer{% endblock %}">
+<meta property="og:description" content="{% block og_desc %}I build fast, high-converting websites and custom automations for local businesses in India. Live in about a week.{% endblock %}">
+<meta property="og:locale" content="en_IN">
+<meta property="og:site_name" content="Sitewright">
+
+<!-- Twitter -->
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:url" content="{{ request.build_absolute_uri }}">
+<meta name="twitter:title" content="{% block tw_title %}{{ developer_name }} – Freelance Web Developer{% endblock %}">
+<meta name="twitter:description" content="{% block tw_desc %}High-converting websites for clinics, restaurants, and businesses in India. Fast turnaround, transparent pricing.{% endblock %}">
+
+<!-- JSON-LD ProfessionalService Schema -->
+<script type="application/ld+json" nonce="{{ request.csp_nonce }}">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Sitewright – {{ developer_name }}",
+  "description": "Solo freelance full-stack developer in {{ developer_city }} building fast, high-converting websites and automations for clinics, restaurants, coaching academies, and local businesses.",
+  "url": "{{ request.scheme }}://{{ request.get_host }}/",
+  "priceRange": "₹₹",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "{{ developer_city }}",
+    "addressCountry": "IN"
+  },
+  "founder": {
+    "@type": "Person",
+    "name": "{{ developer_name }}"
+  },
+  "knowsAbout": ["Django", "Python", "JavaScript", "Web Development", "WhatsApp Automation"]
+}
+</script>
+
+{% if plausible_domain %}
+<!-- Privacy-friendly Plausible Analytics -->
+<script defer data-domain="{{ plausible_domain }}" src="https://plausible.io/js/script.tagged-events.js"></script>
+{% endif %}
+
+<!-- Reduced Google Fonts (Only Syne & DM Sans with font-display: swap) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+{% block extra_css %}{% endblock %}
+</head>
+<body>
+
+<!-- Cult UI Floating Frosted Navbar -->
+<header class="site-header" id="header">
+  <div class="nav-container">
+    <a href="#top" class="logo">
+      <span class="logo-gem"></span>
+      Sitewright
+    </a>
+
+    <!-- Motion Primitives Sliding Pill Navigation (Desktop) -->
+    <div class="nav-links-wrap" id="navLinksWrap">
+      <div class="nav-pill-indicator" id="navIndicator"></div>
+      <nav aria-label="Main Navigation">
+        <ul class="nav-links" id="navLinksList">
+          <li><a href="#services">Services</a></li>
+          <li><a href="#about">About</a></li>
+          <li><a href="#process">How It Works</a></li>
+          <li><a href="#portfolio">Our Work</a></li>
+          <li><a href="#pricing">Pricing</a></li>
+          <li><a href="#faq">FAQ</a></li>
+        </ul>
+      </nav>
+    </div>
+
+    <!-- Actions -->
+    <div class="nav-actions">
+      {% if booking_url %}
+      <a class="btn btn-ghost btn-sm nav-booking-btn" href="{{ booking_url }}" target="_blank" rel="noopener">Book a free 15-min call</a>
+      {% endif %}
+      <a class="btn btn-primary btn-sm nav-quote-btn" href="#contact">Get a quote</a>
+
+      <!-- Mobile Hamburger Toggle Button (<900px) -->
+      <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavMenu">
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+        <span class="hamburger-bar"></span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-nav-menu" id="mobileNavMenu" aria-hidden="true">
+    <nav aria-label="Mobile Navigation">
+      <ul class="mobile-nav-list">
+        <li><a href="#services" class="mobile-nav-link">Services</a></li>
+        <li><a href="#about" class="mobile-nav-link">About</a></li>
+        <li><a href="#process" class="mobile-nav-link">How It Works</a></li>
+        <li><a href="#portfolio" class="mobile-nav-link">Our Work</a></li>
+        <li><a href="#pricing" class="mobile-nav-link">Pricing</a></li>
+        <li><a href="#faq" class="mobile-nav-link">FAQ</a></li>
+      </ul>
+      <div class="mobile-nav-actions">
+        {% if booking_url %}
+        <a class="btn btn-ghost btn-sm mobile-nav-link" href="{{ booking_url }}" target="_blank" rel="noopener">Book a free 15-min call ↗</a>
+        {% endif %}
+        <a class="btn btn-primary btn-sm mobile-nav-link" href="#contact">Get a quote →</a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+{% block content %}{% endblock %}
+
+<div class="wrap">
+  <footer>
+    <div class="footer-info">
+      <div class="footer-brand">
+        <span class="logo-gem" style="width:12px;height:12px;display:inline-block;"></span>
+        <strong>Sitewright</strong> — {{ developer_name }}
+      </div>
+      <p class="footer-location">📍 {{ developer_city }} • Solo Freelance Full-Stack Developer</p>
+      <p class="footer-contact">
+        <a href="mailto:{{ contact_email }}">{{ contact_email }}</a>
+        {% if whatsapp_number %}
+        <span class="footer-sep">•</span>
+        <a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="wa-track-link">WhatsApp</a>
+        {% endif %}
+        {% if github_url %}
+        <span class="footer-sep">•</span>
+        <a href="{{ github_url }}" target="_blank" rel="noopener">GitHub</a>
+        {% endif %}
+        <!-- {% if linkedin_url %}
+        <span class="footer-sep">•</span>
+        <a href="{{ linkedin_url }}" target="_blank" rel="noopener">LinkedIn</a>
+        {% endif %} -->
+      </p>
+    </div>
+    <div class="footer-links">
+      <a href="{% url 'core:privacy' %}">Privacy Policy</a>
+      <span class="footer-sep">•</span>
+      <a href="{% url 'core:terms' %}">Terms of Service</a>
+    </div>
+  </footer>
+</div>
+
+{% if whatsapp_number %}
+<!-- Floating WhatsApp Button -->
+<a href="{{ whatsapp_url }}" target="_blank" rel="noopener" class="whatsapp-float-btn" id="whatsappFloatBtn" data-clean-wa="{{ whatsapp_clean_number }}" title="Chat on WhatsApp" aria-label="Chat on WhatsApp">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-2.65-1.03-5.14-2.9-7.01A9.82 9.82 0 0 0 12.04 2zm.01 1.67c2.2 0 4.26.86 5.82 2.41a8.17 8.17 0 0 1 2.41 5.83c0 4.54-3.7 8.24-8.24 8.24-1.45 0-2.86-.38-4.11-1.11l-.29-.17-3.11.82.83-3.03-.19-.31a8.19 8.19 0 0 1-1.26-4.44c0-4.54 3.7-8.24 8.24-8.24zm4.52 11.53c-.25-.13-1.47-.72-1.7-.81-.23-.08-.39-.13-.56.13-.17.25-.64.81-.79.97-.14.17-.29.19-.54.06-.25-.13-1.06-.39-2.02-1.24-.74-.66-1.24-1.48-1.39-1.73-.14-.25-.02-.39.11-.51.11-.11.25-.29.38-.44.13-.14.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.56-1.35-.77-1.85-.2-.49-.41-.42-.56-.43h-.48c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.1 0 1.24.9 2.44 1.03 2.61.13.17 1.78 2.72 4.31 3.81.6.26 1.07.41 1.44.53.61.19 1.16.17 1.6.1.49-.07 1.47-.6 1.68-1.18.21-.58.21-1.07.15-1.18-.06-.12-.22-.19-.47-.32z"/>
+  </svg>
+  <span>WhatsApp</span>
+</a>
+{% endif %}
+
+<script src="{% static 'core/js/app.js' %}"></script>
+{% block extra_js %}{% endblock %}
+</body>
+</html>

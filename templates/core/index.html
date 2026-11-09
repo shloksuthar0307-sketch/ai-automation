@@ -1,0 +1,563 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="wrap">
+  <!-- Hero Section (Cult UI Vibe - Solo Freelancer for India Niche) -->
+  <header class="hero" id="top">
+    <div>
+      <div class="hero-tag">
+        <span class="pulse-dot"></span> Solo Full-Stack Engineer • Custom Web &amp; AI Apps
+      </div>
+      <h1>I build fast, high-converting websites &amp; <span class="gradient-text">custom web platforms</span>.</h1>
+      <p>From high-performance business sites to custom AI tools and automated client portals. Direct pairing with a solo full-stack engineer—shipped in about a week with zero agency bloat.</p>
+      
+      <div class="hero-actions">
+        <a class="btn btn-primary btn-lg" href="#contact">Start My Website</a>
+        <a class="btn btn-ghost btn-lg" href="#portfolio">See My Work</a>
+      </div>
+    </div>
+
+    <!-- Cult UI Conic Border Beam AI Simulator -->
+    <div class="demo-cult-container" id="demoBlock">
+      <div class="demo-top-bar">
+        <div class="demo-dots">
+          <span></span><span></span><span></span>
+        </div>
+        <div class="demo-url-chip">
+          <span>🔒 https://repairtrace.app</span>
+        </div>
+      </div>
+
+      <div class="prompt-cult-box">
+        <div class="prompt-cult-label">
+          <span>AI Architecture Simulator</span>
+          <span style="color:var(--muted); font-size:11.5px; text-transform:none;">Live system preview:</span>
+        </div>
+        <div class="prompt-typewriter">
+          <span id="typed"></span><span class="caret"></span>
+        </div>
+      </div>
+
+      <div class="site-stage" id="sitePreview">
+        <div class="blk b1">
+          <span class="status-indicator"></span> Real-Time Work Order Pipeline
+        </div>
+        <div class="blk b2" id="siteHeadline">
+          <div class="stage-header-flex">
+            <div>
+              <span class="stage-sub">Vehicle Diagnostics &amp; Telemetry</span>
+              <div class="stage-title">RepairTrace AI • Live Job Card Active</div>
+            </div>
+            <span class="stage-pill">Active</span>
+          </div>
+        </div>
+        <div class="blk b3">
+          <div class="stat-cell">
+            <span class="stat-lbl">3D Inspection</span>
+            <span class="stat-val">Complete</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-lbl">AI Diagnostics</span>
+            <span class="stat-val">99.4% Accurate</span>
+          </div>
+          <div class="stat-cell">
+            <span class="stat-lbl">WhatsApp Status</span>
+            <span class="stat-val">Alert Sent</span>
+          </div>
+        </div>
+        <div class="blk b4">
+          <span>Dispatch Customer Update →</span>
+        </div>
+      </div>
+    </div>
+  </header>
+</div>
+
+<!-- Services Section (Cult UI Clean Zinc Cards - Solo First Person) -->
+<div class="section-band">
+  <section class="wrap section" id="services">
+    <div class="section-head">
+      <span class="section-tag">// What I Deliver</span>
+      <h2>Everything you need to be found, trusted, and booked online</h2>
+      <p>Direct communication with your developer—no agency middleman, no delays.</p>
+    </div>
+
+    <div class="cult-grid">
+      <!-- Card 1 -->
+      <div class="cult-card" data-tilt>
+        <div class="card-num">01</div>
+        <h3>Websites that convert</h3>
+        <p>Landing pages, clinic booking portals, and digital restaurant menus designed around one goal: getting local visitors to call, message, or book.</p>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="cult-card" data-tilt>
+        <div class="card-num">02</div>
+        <h3>Copy & structure included</h3>
+        <p>I structure every headline, page section, and value proposition so your business looks authoritative and authentic to Indian customers.</p>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="cult-card" data-tilt>
+        <div class="card-num">03</div>
+        <h3>Direct developer care</h3>
+        <p>Hosting setup, SSL, security patches, and edits are handled directly by me. Send me a WhatsApp message and updates go live promptly.</p>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- About / Who Builds Your Site Section -->
+<div class="section-band" id="about">
+  <section class="wrap section">
+    <div class="section-head">
+      <span class="section-tag">// Behind the Code</span>
+      <h2>Who builds your site</h2>
+      <p>You work directly with the engineer writing every line of code.</p>
+    </div>
+
+    <div class="about-card">
+      <div class="about-avatar-column">
+        <div class="about-avatar-box">
+          <div class="about-avatar-icon">
+            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+              <circle cx="12" cy="7" r="4"></circle>
+            </svg>
+          </div>
+          <span class="about-avatar-name">{{ developer_name }}</span>
+          <span class="about-avatar-loc">📍 {{ developer_city }}</span>
+        </div>
+      </div>
+
+      <div class="about-content">
+        <h3 class="about-heading">Hi, I'm {{ developer_name }}</h3>
+        <p class="about-bio">
+          I am a solo freelance full-stack developer based in <strong>{{ developer_city }}</strong>. I specialize in building fast, conversion-driven websites and custom web automations for clinics, restaurants, academies, and growing businesses across India.
+        </p>
+        <p class="about-bio">
+          When you work with me, you collaborate directly with your engineer. There are no account managers, no junior subcontractors, and no bloated agency markups. I use modern AI-assisted engineering tools to accelerate development speed, passing significant time and cost savings directly on to you while ensuring rock-solid code quality.
+        </p>
+
+        <div class="about-stack-section">
+          <span class="about-stack-label">Core Tech Stack & Tools:</span>
+          <div class="about-stack-pills">
+            <span class="stack-pill">Django 5</span>
+            <span class="stack-pill">Python</span>
+            <span class="stack-pill">Vanilla JavaScript</span>
+            <span class="stack-pill">PostgreSQL / SQLite</span>
+            <span class="stack-pill">WhiteNoise & Nginx</span>
+            <span class="stack-pill">WhatsApp Web API</span>
+            <span class="stack-pill">RESTful APIs</span>
+          </div>
+        </div>
+
+        <div class="about-links-row">
+          {% if github_url %}
+          <a href="{{ github_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">GitHub Profile ↗</a>
+          {% endif %}
+          <!-- {% if linkedin_url %}
+          <a href="{{ linkedin_url }}" target="_blank" rel="noopener" class="btn btn-ghost btn-sm">LinkedIn Profile ↗</a>
+          {% endif %} -->
+          <a href="#contact" class="btn btn-primary btn-sm">Work With Me →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+<!-- Process Section (Motion Primitives Timeline - Solo First Person) -->
+<section class="wrap section" id="process">
+  <div class="section-head">
+    <span class="section-tag">// My Workflow</span>
+    <h2>From idea to live site in about a week</h2>
+    <p>A streamlined delivery pipeline with direct feedback at each milestone.</p>
+  </div>
+
+  <div class="steps-row">
+    <div class="step-card">
+      <div class="step-badge">1</div>
+      <h3>Tell me your goals</h3>
+      <p>A quick 15-minute call or WhatsApp chat. We discuss your business, ideal customers, and key calls-to-action.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-badge">2</div>
+      <h3>See a working draft</h3>
+      <p>Within 48 hours, I share a clickable, interactive preview of your site to test and review live.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-badge">3</div>
+      <h3>Refine together</h3>
+      <p>Two rounds of revisions to dial in headlines, imagery, layout details, and mobile responsiveness.</p>
+    </div>
+
+    <div class="step-card">
+      <div class="step-badge">4</div>
+      <h3>Go live</h3>
+      <p>I configure your custom domain, SSL certificates, analytics, and launch your site to the world.</p>
+    </div>
+  </div>
+</section>
+
+<!-- Our Work Section (Featured GitHub Repositories & Real Projects) -->
+<div class="section-band" id="portfolio">
+  <section class="wrap section">
+    <div class="section-head">
+      <span class="section-tag">// Real Engineering &amp; GitHub Work</span>
+      <h2>Featured Projects &amp; GitHub Work</h2>
+      <p>Production full-stack web applications, AI-integrated platforms, and open-source systems built and shipped by me. Explore live deployments and GitHub repositories.</p>
+    </div>
+
+    <div class="portfolio-grid">
+      {% for project in projects %}
+      <article class="portfolio-card" data-slug="{{ project.slug }}">
+        <div class="portfolio-card-media">
+          {% if project.image %}
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy" class="portfolio-img">
+          {% else %}
+          <div class="portfolio-placeholder-media">
+            <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
+              <span class="portfolio-badge-cat">{{ project.category }}</span>
+              <span class="portfolio-concept-badge">{{ project.badge }}</span>
+            </div>
+            <div class="portfolio-mockup-graphic">
+              <span class="portfolio-dot"></span><span class="portfolio-dot"></span><span class="portfolio-dot"></span>
+            </div>
+            <div class="portfolio-mockup-body">
+              <strong>{{ project.title }}</strong>
+            </div>
+          </div>
+          {% endif %}
+        </div>
+        <div class="portfolio-card-content">
+          <div class="portfolio-meta-row">
+            <span class="portfolio-cat">{{ project.category }}</span>
+            <span class="portfolio-result-pill">{{ project.result_text }}</span>
+          </div>
+          <h3 class="portfolio-title">{{ project.title }}</h3>
+          <p class="portfolio-desc">{{ project.short_description|truncatewords:24 }}</p>
+          <div class="portfolio-action-row">
+            <button type="button" class="btn btn-ghost btn-sm open-project-modal-btn"
+                    data-title="{{ project.title }}"
+                    data-category="{{ project.category }}"
+                    data-badge="{{ project.badge }}"
+                    data-result="{{ project.result_text }}"
+                    data-desc="{{ project.short_description }}"
+                    data-problem="{{ project.problem }}"
+                    data-solution="{{ project.solution }}"
+                    data-tech="{{ project.tech_stack }}"
+                    data-url="{{ project.live_url }}"
+                    data-github="{{ project.github_url }}"
+                    {% if project.image %}data-image="{{ project.image.url }}"{% endif %}>
+              View Case Study →
+            </button>
+            <div style="display: flex; gap: 8px; align-items: center; flex-wrap: wrap;">
+              {% if project.github_url %}
+              <a href="{{ project.github_url }}" target="_blank" rel="noopener" class="portfolio-live-link" title="View Source on GitHub">
+                GitHub ↗
+              </a>
+              {% endif %}
+              {% if project.live_url and project.live_url != project.github_url %}
+              <a href="{{ project.live_url }}" target="_blank" rel="noopener" class="portfolio-live-link" title="Open Live Demo">
+                Live Demo ↗
+              </a>
+              {% endif %}
+            </div>
+          </div>
+        </div>
+      </article>
+      {% empty %}
+      <div class="portfolio-empty">
+        <p>Projects are being synced with GitHub. Visit <a href="{{ github_url }}" target="_blank" rel="noopener" style="color:#ffffff; text-decoration:underline;">my GitHub profile</a> to see recent repositories.</p>
+      </div>
+      {% endfor %}
+    </div>
+  </section>
+</div>
+
+<!-- Pricing Section (Cult UI 3-Tier Matrix + What's Included / Not Included) -->
+<div class="section-band">
+  <section class="wrap section" id="pricing">
+    <div class="section-head">
+      <span class="section-tag">// Transparent Pricing</span>
+      <h2>Simple, fixed-quote pricing</h2>
+      <p>I confirm an exact fixed quote upfront before starting any work. No surprise invoices.</p>
+    </div>
+
+    <div class="plans-matrix">
+      <!-- Tier 1: Starter -->
+      <div class="plan-item" data-plan="Starter">
+        <h3 class="plan-title">Starter</h3>
+        <p class="plan-sub">High-impact one-page website</p>
+        <div class="plan-price-tag">₹7,000<small> one-time</small></div>
+        <ul class="plan-list">
+          <li>Custom modern layout</li>
+          <li>Mobile & tablet responsive</li>
+          <li>WhatsApp click-to-chat button</li>
+          <li>Enquiry contact form</li>
+          <li>1 round of revisions</li>
+          <li>14 days launch support</li>
+        </ul>
+        <a class="btn btn-ghost select-plan-btn" href="#contact" data-plan-target="Starter">Choose Starter</a>
+      </div>
+
+      <!-- Tier 2: Business (Featured) -->
+      <div class="plan-item featured" data-plan="Business">
+        <span class="featured-pill">Most Popular</span>
+        <h3 class="plan-title">Business</h3>
+        <p class="plan-sub">Multi-page website (up to 6 pages)</p>
+        <div class="plan-price-tag">₹25,000<small> one-time</small></div>
+        <ul class="plan-list">
+          <li>Everything in Starter</li>
+          <li>Up to 6 custom pages</li>
+          <li>Conversion-focused copy</li>
+          <li>Local SEO & schema metadata</li>
+          <li>Fast WhiteNoise performance</li>
+          <li>2 rounds of revisions</li>
+          <li>30 days direct support</li>
+        </ul>
+        <a class="btn btn-primary select-plan-btn" href="#contact" data-plan-target="Business">Choose Business</a>
+      </div>
+
+      <!-- Tier 3: Custom / Automation -->
+      <div class="plan-item" data-plan="Custom">
+        <h3 class="plan-title">Custom / Automation</h3>
+        <p class="plan-sub">Systems, booking & custom backends</p>
+        <div class="plan-price-tag">from ₹45,000<small> one-time</small></div>
+        <ul class="plan-list">
+          <li>Everything in Business</li>
+          <li>Appointment / slot booking systems</li>
+          <li>Automated WhatsApp notifications</li>
+          <li>Custom admin dashboard & CRM</li>
+          <li>Database models & REST APIs</li>
+          <li>60 days priority support</li>
+        </ul>
+        <a class="btn btn-ghost select-plan-btn" href="#contact" data-plan-target="Custom">Choose Custom</a>
+      </div>
+    </div>
+
+    <!-- What's Included / Not Included Breakdown -->
+    <div class="pricing-transparency-card">
+      <div class="transparency-grid">
+        <div class="transparency-col">
+          <h4 class="transparency-title text-success">✓ What is included</h4>
+          <ul class="transparency-list">
+            <li>100% custom source code (no bloated page builders)</li>
+            <li>Full code ownership upon project completion</li>
+            <li>Mobile, tablet, and desktop responsive optimization</li>
+            <li>Direct WhatsApp integration & lead capture</li>
+            <li>DNS, domain pointing & HTTPS / SSL certificate setup</li>
+            <li>Warranty period for bug fixes and launch guidance</li>
+          </ul>
+        </div>
+        <div class="transparency-col">
+          <h4 class="transparency-title text-muted">✕ What is not included</h4>
+          <ul class="transparency-list">
+            <li><strong>Domain registration:</strong> Purchased directly by you via Namecheap/Cloudflare (~₹800–₹1,200/year).</li>
+            <li><strong>Cloud hosting:</strong> Billed directly to your chosen provider (~₹300–₹800/month for standard VPS/cloud).</li>
+            <li><strong>Third-party API charges:</strong> Paid SMS credits or external business API usage fees.</li>
+          </ul>
+        </div>
+      </div>
+      
+      <div class="transparency-footer">
+        <div class="terms-note">
+          <strong>Payment Terms:</strong> 50% deposit upfront to begin development, 50% upon demo approval before final domain launch.
+        </div>
+        <div class="terms-note">
+          <strong>Maintenance & Ongoing Care:</strong> Optional ongoing maintenance, security updates, and edits available from <strong>₹2,500/month</strong> after the included support warranty expires.
+        </div>
+      </div>
+    </div>
+  </section>
+</div>
+
+{% if testimonials %}
+<!-- Testimonials Section (Shown only if published client testimonials exist) -->
+<section class="wrap section" id="testimonials">
+  <div class="section-head" style="text-align: center; margin-inline: auto;">
+    <span class="section-tag">// Client Stories</span>
+    <h2>Trusted by growing businesses</h2>
+    <p>Authentic feedback from business owners and founders who launched with Sitewright.</p>
+  </div>
+
+  <div class="testimonials-grid">
+    {% for t in testimonials %}
+    <div class="testimonial-card">
+      <div class="testimonial-rating">
+        {% for star in "12345"|make_list %}
+          {% if forloop.counter <= t.rating %}★{% else %}☆{% endif %}
+        {% endfor %}
+      </div>
+      <blockquote class="testimonial-quote">“{{ t.quote }}”</blockquote>
+      <div class="testimonial-client-row">
+        {% if t.photo %}
+        <img src="{{ t.photo.url }}" alt="{{ t.client_name }}" class="testimonial-avatar" loading="lazy">
+        {% else %}
+        <div class="testimonial-avatar-fallback">{{ t.client_name|slice:":1" }}</div>
+        {% endif %}
+        <div>
+          <h4 class="testimonial-name">{{ t.client_name }}</h4>
+          <span class="testimonial-biz">{{ t.business }}</span>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<!-- FAQ Section (Accessible Accordion) -->
+<section class="wrap section" id="faq">
+  <div class="section-head" style="text-align: center; margin-inline: auto;">
+    <span class="section-tag">// FAQ</span>
+    <h2>Frequently Asked Questions</h2>
+  </div>
+
+  <div class="faq-box">
+    {% for item in faqs %}
+    <div class="faq-spring-item {% if forloop.first %}open{% endif %}">
+      <button class="faq-spring-btn" type="button" id="faq-btn-{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="faq-body-{{ forloop.counter }}">
+        <span>{{ item.question }}</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </button>
+      <div class="faq-spring-body" id="faq-body-{{ forloop.counter }}" role="region" aria-labelledby="faq-btn-{{ forloop.counter }}">
+        <p>{{ item.answer }}</p>
+      </div>
+    </div>
+    {% empty %}
+    <div class="faq-spring-item open">
+      <div class="faq-spring-body" style="padding: 20px;">
+        <p>No questions published yet. Feel free to contact me with any questions.</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+
+<!-- Contact & Working Django Quote Form Section -->
+<div class="wrap contact-zone" id="contact">
+  <div class="cta-glass-card">
+    <div class="cta-header">
+      <h2>Ready to get more enquiries?</h2>
+      <p>Tell me what your business does and I will send a free concept outline and a fixed quote within 24 hours.</p>
+    </div>
+
+    <div class="quote-form-wrap">
+      <form id="quoteForm" method="post" action="{% url 'core:submit_quote' %}" data-contact-email="{{ contact_email }}">
+        {% csrf_token %}
+        {{ form.contact_ref_url }}
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label for="clientName" class="form-label">Your Name <span class="form-req">*</span></label>
+            {{ form.name }}
+          </div>
+          <div class="form-field">
+            <label for="clientEmail" class="form-label">Email Address <span class="form-hint">(optional if phone given)</span></label>
+            {{ form.email }}
+          </div>
+        </div>
+
+        <div class="form-grid-2">
+          <div class="form-field">
+            <label for="clientBusiness" class="form-label">Business / Clinic / Restaurant Name</label>
+            {{ form.business_name }}
+          </div>
+          <div class="form-field">
+            <label for="clientPhone" class="form-label">WhatsApp / Phone Number <span class="form-hint">(optional if email given)</span></label>
+            {{ form.phone }}
+          </div>
+        </div>
+
+        <!-- Cult UI Segmented Plan Selector -->
+        <label class="form-label" style="margin-top: 14px; display: block;">Select a Project Scope</label>
+        <div class="cult-plan-picker">
+          <button type="button" class="cult-plan-pill" data-plan-choice="Starter">Starter (₹7k)</button>
+          <button type="button" class="cult-plan-pill active" data-plan-choice="Business">Business (₹25k)</button>
+          <button type="button" class="cult-plan-pill" data-plan-choice="Custom">Custom / Automation (from ₹45k)</button>
+        </div>
+        {{ form.plan }}
+
+        <div class="form-field" style="margin-top: 14px;">
+          <label for="clientBrief" class="form-label">Tell Me About Your Business & Website Requirements</label>
+          {{ form.brief }}
+        </div>
+
+        <div class="form-btn-row">
+          <button type="submit" class="btn btn-primary btn-lg" id="submitQuoteBtn">Send My Website Idea</button>
+          <a class="btn btn-ghost btn-lg" id="directEmailBtn" href="mailto:{{ contact_email }}?subject=Website%20enquiry">Email directly instead</a>
+        </div>
+
+        <!-- Accessible Inline Form Error Message -->
+        <div id="formErrorMessage" role="alert" aria-live="polite" style="display: none; margin-top: 14px; padding: 12px 16px; border-radius: 10px; background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; font-size: 14px; text-align: center;"></div>
+      </form>
+
+      <!-- Success Banner -->
+      <div class="form-success-banner" id="formSuccess">
+        <h3>✓ Thank you! I received your request.</h3>
+        <p>I am reviewing your brief and will get back to <strong id="successEmail"></strong> within 24 hours.</p>
+        
+        <div class="success-actions-row" style="margin-top: 18px; display: flex; gap: 10px; flex-wrap: wrap; justify-content: center;">
+          {% if whatsapp_number %}
+          <a class="btn btn-primary btn-sm wa-track-link" id="whatsappSuccessBtn" data-clean-wa="{{ whatsapp_clean_number }}" href="{{ whatsapp_url }}" target="_blank" rel="noopener">
+            Chat on WhatsApp ↗
+          </a>
+          {% endif %}
+          {% if booking_url %}
+          <a class="btn btn-ghost btn-sm" href="{{ booking_url }}" target="_blank" rel="noopener">
+            Book a 15-min call ↗
+          </a>
+          {% endif %}
+          <button type="button" class="btn btn-ghost btn-sm" id="resetFormBtn">Submit another idea</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Portfolio Project Detail Modal (Accessible Dialog) -->
+<div class="modal-overlay" id="projectModal" role="dialog" aria-modal="true" aria-labelledby="projectModalTitle" style="display: none;">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div>
+        <div style="display: flex; gap: 8px; align-items: center; margin-bottom: 6px;">
+          <span class="portfolio-badge-cat" id="projectModalCategory"></span>
+          <span class="portfolio-concept-badge" id="projectModalBadge">Concept project</span>
+        </div>
+        <h3 id="projectModalTitle" style="font-size: 22px; font-weight: 800; margin: 0; color: var(--ink-heading);"></h3>
+        <span id="projectModalResult" class="portfolio-result-pill" style="margin-top: 8px; display: inline-block;"></span>
+      </div>
+      <button class="modal-close" id="projectModalCloseBtn" type="button" aria-label="Close dialog">✕</button>
+    </div>
+
+    <div class="modal-brief-content" style="font-size: 15px; color: var(--ink); display: flex; flex-direction: column; gap: 16px;">
+      <div id="projectModalDesc"></div>
+
+      <div class="modal-breakdown-box" id="projectModalBreakdown" style="display: flex; flex-direction: column; gap: 12px; padding: 14px; background: var(--surface-alt); border: 1px solid var(--line); border-radius: 10px;">
+        <div id="projectModalProblemWrap">
+          <strong style="color: #f87171; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">The Problem:</strong>
+          <p id="projectModalProblem" style="margin-top: 4px; font-size: 14px; color: var(--muted);"></p>
+        </div>
+        <div id="projectModalSolutionWrap">
+          <strong style="color: #34d399; font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">The Solution:</strong>
+          <p id="projectModalSolution" style="margin-top: 4px; font-size: 14px; color: var(--muted);"></p>
+        </div>
+        <div id="projectModalTechWrap">
+          <strong style="color: var(--ink); font-size: 13px; text-transform: uppercase; letter-spacing: 0.05em;">Tech Stack:</strong>
+          <p id="projectModalTech" style="margin-top: 4px; font-size: 13.5px; font-family: var(--font-mono); color: var(--muted-light);"></p>
+        </div>
+      </div>
+    </div>
+
+    <div style="display: flex; gap: 10px; justify-content: flex-end; align-items: center; margin-top: 16px; flex-wrap: wrap;">
+      <a href="#contact" class="btn btn-primary btn-sm" id="projectModalCtaBtn">Work With Me →</a>
+      <a href="#" class="btn btn-ghost btn-sm" id="projectModalGithubBtn" target="_blank" rel="noopener" style="display: none;">GitHub Repo ↗</a>
+      <a href="#" class="btn btn-ghost btn-sm" id="projectModalLiveBtn" target="_blank" rel="noopener" style="display: none;">Live Demo ↗</a>
+    </div>
+  </div>
+</div>
+{% endblock %}

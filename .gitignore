@@ -1,0 +1,15 @@
+*.pyc
+__pycache__/
+*.sqlite3
+db.sqlite3
+*.log
+.vscode/
+.idea/
+.env
+.env.local
+.env.*
+!.env.example
+staticfiles/
+media/
+.agents/
+README.md

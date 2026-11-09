@@ -1,0 +1,729 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="cult">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Admin Dashboard – Sitewright</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,100..1000;1,9..40,100..1000&family=Syne:wght@500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+
+<style nonce="{{ request.csp_nonce }}">
+/* ==========================================================================
+   CUSTOM ADMIN DASHBOARD STYLES (CULT UI)
+   ========================================================================== */
+.admin-layout {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Admin Top Bar */
+.admin-navbar {
+  background: var(--surface-glass);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-bottom: 1px solid var(--line);
+  padding: 14px 32px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+.admin-brand {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+}
+.admin-badge {
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: 6px;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  text-transform: uppercase;
+}
+
+.admin-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+.user-pill {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: var(--ink);
+  background: var(--surface-alt);
+  padding: 6px 14px;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+}
+.user-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #10b981;
+  box-shadow: 0 0 8px #10b981;
+}
+
+/* Dashboard Body */
+.admin-main {
+  flex: 1;
+  padding: 36px 32px 64px;
+  max-width: 1400px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+.dashboard-title-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 32px;
+}
+.dashboard-title-row h1 {
+  font-size: 32px;
+  font-weight: 800;
+}
+
+/* Metric Cards Grid */
+.metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+  margin-bottom: 36px;
+}
+.metric-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  box-shadow: 0 10px 25px -10px rgba(0, 0, 0, 0.4);
+}
+.metric-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.metric-value {
+  font-family: 'Syne', sans-serif;
+  font-size: 36px;
+  font-weight: 800;
+  color: var(--ink-heading);
+  line-height: 1;
+}
+.metric-sub {
+  font-size: 13px;
+  color: var(--muted);
+}
+
+/* Table Card & Controls */
+.table-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  overflow: hidden;
+  box-shadow: var(--shadow-elevated);
+}
+
+.table-toolbar {
+  padding: 20px 24px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 16px;
+}
+.search-filter-wrap {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  flex: 1;
+  max-width: 600px;
+}
+.search-input {
+  flex: 1;
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 16px;
+  font-family: inherit;
+  font-size: 14.5px;
+  color: var(--ink);
+  outline: none;
+}
+.search-input:focus {
+  border-color: #ffffff;
+  box-shadow: 0 0 0 1px #ffffff;
+}
+
+.filter-select {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 14px;
+  color: var(--ink);
+  outline: none;
+  cursor: pointer;
+}
+
+/* Custom Table */
+.leads-table-container {
+  overflow-x: auto;
+}
+.leads-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 14.5px;
+}
+.leads-table th {
+  padding: 14px 20px;
+  background: var(--surface-alt);
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--line);
+}
+.leads-table td {
+  padding: 18px 20px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  vertical-align: middle;
+}
+.leads-table tr:hover td {
+  background: rgba(255, 255, 255, 0.02);
+}
+
+/* Client cell */
+.client-info h4 {
+  font-size: 15.5px;
+  font-weight: 700;
+  margin-bottom: 2px;
+}
+.client-info p {
+  color: var(--muted);
+  font-size: 13px;
+  margin: 0;
+}
+
+/* Package Pills */
+.plan-tag {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.plan-Starter { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border: 1px solid rgba(59, 130, 246, 0.3); }
+.plan-Business { background: rgba(16, 185, 129, 0.15); color: #34d399; border: 1px solid rgba(16, 185, 129, 0.3); }
+.plan-Store { background: rgba(245, 158, 11, 0.15); color: #fbbf24; border: 1px solid rgba(245, 158, 11, 0.3); }
+
+/* Status Selector in Table */
+.status-select {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 6px 10px;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  cursor: pointer;
+  outline: none;
+}
+.status-select:focus {
+  border-color: #ffffff;
+}
+
+/* Action Buttons */
+.action-btn-group {
+  display: flex;
+  gap: 8px;
+}
+.icon-btn {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  color: var(--muted);
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+.icon-btn:hover {
+  color: #ffffff;
+  border-color: rgba(255, 255, 255, 0.4);
+}
+.icon-btn.danger:hover {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border-color: rgba(239, 68, 68, 0.4);
+}
+
+/* Empty State */
+.empty-state {
+  padding: 64px 24px;
+  text-align: center;
+  color: var(--muted);
+}
+.empty-icon {
+  font-size: 40px;
+  margin-bottom: 12px;
+}
+
+/* Modal Brief Viewer */
+.modal-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(8px);
+  z-index: 2000;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+.modal-overlay.open {
+  display: flex;
+}
+.modal-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  width: 100%;
+  max-width: 600px;
+  box-shadow: var(--shadow-elevated);
+  padding: 32px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  position: relative;
+}
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.modal-close {
+  background: transparent;
+  border: 0;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 20px;
+}
+.modal-brief-content {
+  background: var(--surface-alt);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 16px 20px;
+  font-size: 14.5px;
+  line-height: 1.6;
+  white-space: pre-wrap;
+  max-height: 350px;
+  overflow-y: auto;
+  color: #fafafa;
+}
+</style>
+</head>
+<body>
+
+<div class="admin-layout">
+  <!-- Top Navigation Bar -->
+  <header class="admin-navbar">
+    <div class="admin-brand">
+      <span class="logo-gem"></span>
+      Sitewright
+      <span class="admin-badge">Admin Panel</span>
+    </div>
+
+    <div class="admin-nav-right">
+      <a href="{% url 'core:index' %}" class="btn btn-ghost btn-sm" target="_blank">
+        <span>View Live Site ↗</span>
+      </a>
+
+      <div class="user-pill">
+        <span class="user-dot"></span>
+        <span>{{ request.user.username }}</span>
+      </div>
+
+      <form method="post" action="{% url 'core:admin_logout' %}" style="display: inline; margin: 0;">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-ghost btn-sm" style="color: #f87171; background: transparent; border: 0; cursor: pointer;">
+          Sign Out
+        </button>
+      </form>
+    </div>
+  </header>
+
+  <!-- Main Content Body -->
+  <main class="admin-main">
+    <div class="dashboard-title-row">
+      <div>
+        <h1>Inquiries & Leads Overview</h1>
+        <p style="color: var(--muted); font-size: 15px; margin-top: 4px;">Real-time incoming website briefs and quote submissions</p>
+      </div>
+
+      <div style="display: flex; gap: 12px;">
+        <a href="{% url 'core:admin_export_csv' %}" class="btn btn-ghost btn-sm">
+          <span>⤓ Export CSV</span>
+        </a>
+        <a href="{% url 'admin:index' %}" class="btn btn-ghost btn-sm" target="_blank">
+          <span>Django Admin Standard ↗</span>
+        </a>
+      </div>
+    </div>
+
+    <!-- Metrics Cards Grid -->
+    <div class="metrics-grid">
+      <div class="metric-card">
+        <span class="metric-label">Total Leads</span>
+        <div class="metric-value">{{ total_count }}</div>
+        <span class="metric-sub">Total quote submissions recorded</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">New / Uncontacted</span>
+        <div class="metric-value" style="color: #60a5fa;">{{ new_count }}</div>
+        <span class="metric-sub">Leads awaiting your review</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">In Progress</span>
+        <div class="metric-value" style="color: #fbbf24;">{{ in_progress_count }}</div>
+        <span class="metric-sub">Proposals or revisions in development</span>
+      </div>
+
+      <div class="metric-card">
+        <span class="metric-label">Pipeline Value</span>
+        <div class="metric-value" style="color: #34d399;">₹{{ pipeline_value|floatformat:0 }}</div>
+        <span class="metric-sub">Estimated revenue from active inquiries</span>
+      </div>
+    </div>
+
+    <!-- Table Card Container -->
+    <div class="table-card">
+      <div class="table-toolbar">
+        <form method="get" class="search-filter-wrap" id="adminFilterForm">
+          <input type="text" name="q" value="{{ search_query }}" class="search-input" placeholder="Search by name, email, business or brief keywords...">
+
+          <select name="status" class="filter-select">
+            <option value="all" {% if selected_status == 'all' %}selected{% endif %}>All Statuses</option>
+            {% for code, label in status_choices %}
+            <option value="{{ code }}" {% if selected_status == code %}selected{% endif %}>{{ label }}</option>
+            {% endfor %}
+          </select>
+
+          <select name="plan" class="filter-select">
+            <option value="all" {% if selected_plan == 'all' %}selected{% endif %}>All Packages</option>
+            {% for code, label in plan_choices %}
+            <option value="{{ code }}" {% if selected_plan == code %}selected{% endif %}>{{ code }}</option>
+            {% endfor %}
+          </select>
+
+          {% if search_query or selected_status != 'all' or selected_plan != 'all' %}
+          <a href="{% url 'core:admin_dashboard' %}" class="btn btn-ghost btn-sm" style="white-space: nowrap;">Clear</a>
+          {% endif %}
+        </form>
+
+        <div style="font-size: 13.5px; color: var(--muted);">
+          Showing <strong>{{ quotes|length }}</strong> of <strong>{{ paginator.count }}</strong> inquiry records
+        </div>
+      </div>
+
+      <!-- Leads Table -->
+      <div class="leads-table-container">
+        <table class="leads-table">
+          <thead>
+            <tr>
+              <th>Client</th>
+              <th>Contact Details</th>
+              <th>Package</th>
+              <th>Status</th>
+              <th>Submission Date</th>
+              <th style="text-align: right;">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for q in quotes %}
+            <tr id="quoteRow-{{ q.id }}">
+              <td>
+                <div class="client-info">
+                  <h4>{{ q.name }}</h4>
+                  <p>{{ q.business_name|default:"No company stated" }}</p>
+                </div>
+              </td>
+              <td>
+                <div style="display: flex; flex-direction: column; gap: 3px;">
+                  <a href="mailto:{{ q.email }}" style="color: #60a5fa; text-decoration: underline;">{{ q.email }}</a>
+                  <span style="color: var(--muted); font-size: 12.5px;">{{ q.phone|default:"Phone not provided" }}</span>
+                </div>
+              </td>
+              <td>
+                <span class="plan-tag plan-{{ q.plan }}">{{ q.plan }}</span>
+              </td>
+              <td>
+                <!-- Quick Status Dropdown via AJAX -->
+                <select class="status-select" data-quote-id="{{ q.id }}">
+                  {% for code, label in status_choices %}
+                  <option value="{{ code }}" {% if q.status == code %}selected{% endif %}>{{ label }}</option>
+                  {% endfor %}
+                </select>
+              </td>
+              <td style="color: var(--muted); font-size: 13.5px;">
+                {{ q.created_at|date:"d M Y, h:i A" }}
+              </td>
+              <td style="text-align: right;">
+                <div class="action-btn-group" style="justify-content: flex-end;">
+                  <!-- View Brief Modal -->
+                  <button class="icon-btn view-brief-btn" 
+                          data-name="{{ q.name }}"
+                          data-business="{{ q.business_name }}"
+                          data-plan="{{ q.plan }}"
+                          data-email="{{ q.email }}"
+                          data-phone="{{ q.phone }}"
+                          data-brief="{{ q.brief|default:'No project notes provided.' }}"
+                          title="View Full Brief">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  </button>
+
+                  <!-- Direct Email Link -->
+                  <a href="mailto:{{ q.email }}?subject=Your%20Website%20Quote%20Request&body=Hi%20{{ q.name|urlencode }},%0A%0AThank%20you%20for%20contacting%20Sitewright%20regarding%20the%20{{ q.plan }}%20package." class="icon-btn" title="Reply via Email">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="20" height="16" x="2" y="4" rx="2"/><path d="m22 7-8.97 5.7a1.94 1.94 0 0 1-2.06 0L2 7"/></svg>
+                  </a>
+
+                  <!-- Delete Quote -->
+                  <button class="icon-btn danger delete-quote-btn" data-quote-id="{{ q.id }}" title="Delete Lead">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18"/><path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"/><path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"/></svg>
+                  </button>
+                </div>
+              </td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="6">
+                <div class="empty-state">
+                  <div class="empty-icon">📥</div>
+                  <h3 style="font-size: 18px; margin-bottom: 6px;">No Lead Records Found</h3>
+                  <p style="font-size: 14px;">When visitors submit website inquiries from the landing page, they will appear here automatically.</p>
+                </div>
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination Controls -->
+      {% if page_obj.has_other_pages %}
+      <div class="table-pagination" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 24px; border-top: 1px solid var(--line); font-size: 14px;">
+        <div style="color: var(--muted);">
+          Showing {{ page_obj.start_index }}–{{ page_obj.end_index }} of {{ paginator.count }} leads
+        </div>
+        <div style="display: flex; gap: 8px; align-items: center;">
+          {% if page_obj.has_previous %}
+          <a href="?page={{ page_obj.previous_page_number }}{% if preserved_filters %}&{{ preserved_filters }}{% endif %}" class="btn btn-ghost btn-sm" id="prevPageBtn">
+            ← Previous
+          </a>
+          {% endif %}
+
+          <span style="color: var(--muted); padding: 0 8px;">
+            Page {{ page_obj.number }} of {{ paginator.num_pages }}
+          </span>
+
+          {% if page_obj.has_next %}
+          <a href="?page={{ page_obj.next_page_number }}{% if preserved_filters %}&{{ preserved_filters }}{% endif %}" class="btn btn-ghost btn-sm" id="nextPageBtn">
+            Next →
+          </a>
+          {% endif %}
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </main>
+</div>
+
+<!-- Brief Viewer Modal -->
+<div class="modal-overlay" id="briefModal">
+  <div class="modal-card">
+    <div class="modal-header">
+      <div>
+        <h3 id="modalClientName" style="font-size: 20px;">Client Project Brief</h3>
+        <p id="modalClientMeta" style="font-size: 13px; color: var(--muted); margin-top: 2px;"></p>
+      </div>
+      <button class="modal-close" id="modalCloseBtn">✕</button>
+    </div>
+
+    <div class="modal-brief-content" id="modalBriefText"></div>
+
+    <div style="display: flex; gap: 10px; justify-content: flex-end;">
+      <button type="button" class="btn btn-ghost btn-sm" id="modalCopyBtn">📋 Copy Brief</button>
+      <a href="#" class="btn btn-primary btn-sm" id="modalEmailBtn">Reply via Email →</a>
+    </div>
+  </div>
+</div>
+
+<!-- CSRF Token for AJAX -->
+<input type="hidden" id="csrfToken" value="{{ csrf_token }}">
+
+<script nonce="{{ request.csp_nonce }}">
+(function() {
+  const csrfToken = document.getElementById('csrfToken').value;
+
+  // Auto-submit filter dropdowns on change (CSP compliant)
+  document.querySelectorAll('#adminFilterForm select.filter-select').forEach(function(select) {
+    select.addEventListener('change', function() {
+      document.getElementById('adminFilterForm').submit();
+    });
+  });
+
+  // 1. AJAX Status Selector
+  document.querySelectorAll('.status-select').forEach(function(select) {
+    let previousValue = select.value;
+    select.addEventListener('focus', function() {
+      previousValue = this.value;
+    });
+    select.addEventListener('change', function() {
+      const quoteId = select.getAttribute('data-quote-id');
+      const newStatus = select.value;
+
+      fetch(`/portal-hq/quote/${quoteId}/update-status/`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRFToken': csrfToken
+        },
+        body: JSON.stringify({ status: newStatus })
+      })
+      .then(res => {
+        if (!res.ok) {
+          throw new Error('Server returned HTTP ' + res.status);
+        }
+        return res.json();
+      })
+      .then(res => {
+        if (!res.success) {
+          alert('Failed to update status: ' + (res.error || 'Server error'));
+          select.value = previousValue;
+        } else {
+          previousValue = newStatus;
+        }
+      })
+      .catch(err => {
+        alert('Network error updating status: ' + (err.message || 'Please check your connection'));
+        select.value = previousValue;
+      });
+    });
+  });
+
+  // 2. Delete Lead Handler
+  document.querySelectorAll('.delete-quote-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const quoteId = btn.getAttribute('data-quote-id');
+      if (confirm('Are you sure you want to permanently delete this lead record?')) {
+        fetch(`/portal-hq/quote/${quoteId}/delete/`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrfToken,
+            'X-Requested-With': 'XMLHttpRequest'
+          }
+        })
+        .then(res => {
+          if (!res.ok) {
+            throw new Error('Server returned HTTP ' + res.status);
+          }
+          return res.json();
+        })
+        .then(res => {
+          if (res.success) {
+            const row = document.getElementById(`quoteRow-${quoteId}`);
+            if (row) row.remove();
+          } else {
+            alert('Failed to delete lead: ' + (res.error || 'Unknown error occurred'));
+          }
+        })
+        .catch(err => {
+          alert('Network or server error deleting lead: ' + (err.message || 'Please check your connection'));
+        });
+      }
+    });
+  });
+
+  // 3. Modal Brief Viewer
+  const briefModal = document.getElementById('briefModal');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+  const modalClientName = document.getElementById('modalClientName');
+  const modalClientMeta = document.getElementById('modalClientMeta');
+  const modalBriefText = document.getElementById('modalBriefText');
+  const modalCopyBtn = document.getElementById('modalCopyBtn');
+  const modalEmailBtn = document.getElementById('modalEmailBtn');
+
+  document.querySelectorAll('.view-brief-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      const name = btn.getAttribute('data-name');
+      const biz = btn.getAttribute('data-business');
+      const plan = btn.getAttribute('data-plan');
+      const email = btn.getAttribute('data-email');
+      const phone = btn.getAttribute('data-phone');
+      const brief = btn.getAttribute('data-brief');
+
+      modalClientName.textContent = name + (biz ? ` (${biz})` : '');
+      modalClientMeta.textContent = `Package: ${plan} • Email: ${email} • Phone: ${phone || 'N/A'}`;
+      modalBriefText.textContent = brief;
+
+      modalEmailBtn.href = `mailto:${email}?subject=Regarding%20your%20website%20project`;
+      briefModal.classList.add('open');
+    });
+  });
+
+  modalCloseBtn.addEventListener('click', function() {
+    briefModal.classList.remove('open');
+  });
+
+  briefModal.addEventListener('click', function(e) {
+    if (e.target === briefModal) {
+      briefModal.classList.remove('open');
+    }
+  });
+
+  modalCopyBtn.addEventListener('click', function() {
+    navigator.clipboard.writeText(modalBriefText.textContent).then(function() {
+      modalCopyBtn.textContent = '✓ Copied!';
+      setTimeout(function() { modalCopyBtn.textContent = '📋 Copy Brief'; }, 2000);
+    });
+  });
+})();
+</script>
+
+</body>
+</html>

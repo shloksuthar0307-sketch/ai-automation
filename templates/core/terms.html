@@ -1,0 +1,66 @@
+{% extends 'core/base.html' %}
+
+{% block title %}Terms of Service – Sitewright{% endblock %}
+{% block meta_desc %}Standard freelance engagement terms, payment terms, and project policies for Sitewright.{% endblock %}
+
+{% block content %}
+<div class="wrap" style="padding-top: 48px; padding-bottom: 96px; max-width: 860px; margin: 0 auto;">
+  <header style="margin-bottom: 36px;">
+    <span class="section-tag">// Client Engagement Agreement</span>
+    <h1 style="font-size: 36px; font-weight: 800; margin-top: 8px; color: var(--ink-heading);">Terms of Service</h1>
+    <p style="color: var(--muted); font-size: 15px; margin-top: 6px;">Last Updated: November 2026 • Freelance Web Development Engagement</p>
+  </header>
+
+  <article class="cult-card" style="padding: 36px; line-height: 1.7; font-size: 15px; color: var(--ink); display: flex; flex-direction: column; gap: 24px;">
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">1. Overview</h2>
+      <p>These Terms of Service govern the web design and full-stack development services provided by {{ developer_name }} operating as Sitewright ("Developer", "I") to you ("Client"). By approving a project proposal or paying an initial deposit, you agree to these terms.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">2. Project Scope & Estimates</h2>
+      <p>All projects begin with an agreed brief and fixed-price estimate based on your specific requirements (number of pages, features, and integrations). Any substantial additions or alterations requested during development beyond the agreed scope will be quoted separately before implementation.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">3. Payment Terms</h2>
+      <ul style="padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <li><strong>Advance Deposit:</strong> A 50% non-refundable deposit is required prior to starting wireframing, architecture, and development.</li>
+        <li><strong>Final Milestone:</strong> The remaining 50% balance is due upon your review and approval of the completed staging site, prior to live DNS transfer and domain deployment.</li>
+        <li><strong>Invoicing:</strong> Invoices are issued with bank transfer (IMPS/NEFT/UPI) details.</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">4. Excluded Costs (Third-Party Services)</h2>
+      <p>My fixed quotes cover design, custom programming, responsiveness testing, and launch setup. The following expenses are paid directly by the client to third-party providers:</p>
+      <ul style="padding-left: 20px; margin-top: 8px; display: flex; flex-direction: column; gap: 6px;">
+        <li>Domain name registration (typically ₹800–₹1,200/year via Namecheap/Cloudflare).</li>
+        <li>Hosting / VPS infrastructure (typically ₹400–₹1,200/month depending on traffic).</li>
+        <li>Paid third-party APIs (e.g. WhatsApp Business Cloud API credits, SMS gateways, paid stock media).</li>
+      </ul>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">5. Intellectual Property & Ownership</h2>
+      <p>Upon final settlement of the remaining project balance, 100% full ownership of the custom website design, written content, and code transfers entirely to you. You are free to host, modify, or migrate your site wherever you choose without lock-in.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">6. Revisions & Warranty Support</h2>
+      <p>Each plan includes designated revision rounds to adjust layout, typography, and content. Following deployment, every project receives a 30-day warranty during which any software bugs or layout regressions will be resolved promptly at no additional charge.</p>
+      <p style="margin-top: 8px;">Ongoing monthly maintenance (security patches, backups, uptime checks, and content updates) is available starting from ₹2,500/month after the warranty period.</p>
+    </section>
+
+    <section>
+      <h2 style="font-size: 20px; font-weight: 700; color: #ffffff; margin-bottom: 8px;">7. Governing Jurisdiction</h2>
+      <p>This engagement is governed by the laws of India, with jurisdiction in {{ developer_city }}.</p>
+    </section>
+  </article>
+
+  <div style="margin-top: 32px; text-align: center;">
+    <a href="{% url 'core:index' %}" class="btn btn-ghost btn-sm">← Back to Homepage</a>
+  </div>
+</div>
+{% endblock %}
+
