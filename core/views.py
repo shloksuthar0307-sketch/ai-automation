@@ -450,3 +450,54 @@ def robots_txt_view(request):
         f"Sitemap: {sitemap_url}"
     ]
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+# ==============================================================================
+# SYSTEM & HEALTH MONITORING VIEWS
+# ==============================================================================
+
+@require_http_methods(["GET", "HEAD"])
+def health_check_view(request):
+    """
+    Production health check endpoint for uptime monitors, Kubernetes probes,
+    Docker healthchecks, and load balancers.
+    Checks database connection and cache accessibility.
+    """
+    health_status = {
+        'status': 'ok',
+        'database': 'ok',
+        'cache': 'ok',
+    }
+    http_status = 200
+
+    # 1. Database connectivity check
+    try:
+        from django.db import connection
+        with connection.cursor() as cursor:
+            cursor.execute("SELECT 1;")
+            row = cursor.fetchone()
+            if not row or row[0] != 1:
+                health_status['database'] = 'unhealthy: invalid response'
+                health_status['status'] = 'unhealthy'
+                http_status = 503
+    except Exception as exc:
+        logger.error("Health check database probe failed: %s", exc)
+        health_status['database'] = f'unhealthy: {str(exc)}'
+        health_status['status'] = 'unhealthy'
+        http_status = 503
+
+    # 2. Cache accessibility check
+    try:
+        cache.set('__health_probe__', 'ok', timeout=10)
+        cached = cache.get('__health_probe__')
+        if cached != 'ok':
+            health_status['cache'] = 'degraded: get mismatch'
+            if health_status['status'] == 'ok':
+                health_status['status'] = 'degraded'
+    except Exception as exc:
+        logger.warning("Health check cache probe warning: %s", exc)
+        health_status['cache'] = f'degraded: {str(exc)}'
+        if health_status['status'] == 'ok':
+            health_status['status'] = 'degraded'
+
+    return JsonResponse(health_status, status=http_status)

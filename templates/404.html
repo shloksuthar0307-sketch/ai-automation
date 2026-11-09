@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en" data-theme="cult">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>404: Page Not Found | Sitewright</title>
+<meta name="theme-color" content="#09090b">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2309090b'/><path d='M12 4L4 12l8 8 8-8z' fill='%23ffffff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{% static 'core/css/style.css' %}">
+<style nonce="{{ request.csp_nonce }}">
+  .error-container {
+    min-height: 80vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    text-align: center;
+  }
+  .error-card {
+    background: var(--surface, #121215);
+    border: 1px solid var(--line, #27272a);
+    border-radius: 16px;
+    padding: 48px 36px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85);
+  }
+  .error-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-mono, monospace);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--accent, #ffffff);
+    background: rgba(255, 255, 255, 0.08);
+    border: 1px solid var(--line-strong, rgba(255, 255, 255, 0.18));
+    padding: 6px 14px;
+    border-radius: 9999px;
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+  .error-title {
+    font-family: 'Syne', system-ui, sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--ink-heading, #ffffff);
+    margin-bottom: 16px;
+    letter-spacing: -0.03em;
+  }
+  .error-desc {
+    color: var(--muted, #a1a1aa);
+    font-size: 1rem;
+    line-height: 1.6;
+    margin-bottom: 32px;
+  }
+  .error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-cult {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .btn-primary-cult {
+    background: #ffffff;
+    color: #09090b;
+  }
+  .btn-primary-cult:hover {
+    background: #e4e4e7;
+    transform: translateY(-1px);
+  }
+  .btn-ghost-cult {
+    background: transparent;
+    color: #fafafa;
+    border: 1px solid #27272a;
+  }
+  .btn-ghost-cult:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #3f3f46;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header" style="margin-top: 16px;">
+  <div class="nav-container" style="max-width: 1140px; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; width: 100%; padding: 0 24px;">
+    <a href="/" class="logo" style="display: inline-flex; align-items: center; gap: 8px; font-weight: 700; color: #fff; text-decoration: none;">
+      <span class="logo-gem" style="display: inline-block; width: 14px; height: 14px; background: #fff; transform: rotate(45deg); border-radius: 2px;"></span>
+      Sitewright
+    </a>
+    <a href="/" class="btn btn-ghost btn-sm" style="color: #a1a1aa; font-size: 0.875rem;">← Back to site</a>
+  </div>
+</header>
+
+<main class="error-container">
+  <div class="error-card">
+    <div class="error-code">
+      <span>●</span> 404 NOT FOUND
+    </div>
+    <h1 class="error-title">Page Doesn't Exist</h1>
+    <p class="error-desc">
+      The link you followed may be broken, or the page may have been moved or removed.
+    </p>
+    <div class="error-actions">
+      <a href="/" class="btn-cult btn-primary-cult">Return to Home</a>
+      <a href="/#contact" class="btn-cult btn-ghost-cult">Get in Touch</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

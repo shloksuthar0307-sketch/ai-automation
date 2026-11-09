@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="cult">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>500: Server Error | Sitewright</title>
+<meta name="theme-color" content="#09090b">
+<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2309090b'/><path d='M12 4L4 12l8 8 8-8z' fill='%23ffffff'/></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/core/css/style.css">
+<style>
+  body {
+    background-color: #09090b;
+    color: #fafafa;
+    font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    margin: 0;
+    padding: 0;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  .site-header-simple {
+    padding: 24px;
+    display: flex;
+    justify-content: center;
+  }
+  .nav-box {
+    max-width: 1140px;
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .logo {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'Syne', sans-serif;
+    font-weight: 700;
+    font-size: 1.25rem;
+    color: #ffffff;
+    text-decoration: none;
+  }
+  .logo-gem {
+    width: 14px;
+    height: 14px;
+    background: #ffffff;
+    transform: rotate(45deg);
+    border-radius: 2px;
+  }
+  .error-container {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 32px 16px;
+    text-align: center;
+  }
+  .error-card {
+    background: #121215;
+    border: 1px solid #27272a;
+    border-radius: 16px;
+    padding: 48px 36px;
+    max-width: 520px;
+    width: 100%;
+    box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.85);
+  }
+  .error-code {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-family: ui-monospace, SFMono-Regular, monospace;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    padding: 6px 14px;
+    border-radius: 9999px;
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+  }
+  .error-title {
+    font-family: 'Syne', sans-serif;
+    font-size: 2rem;
+    font-weight: 800;
+    color: #ffffff;
+    margin: 0 0 16px 0;
+    letter-spacing: -0.03em;
+  }
+  .error-desc {
+    color: #a1a1aa;
+    font-size: 1rem;
+    line-height: 1.6;
+    margin: 0 0 32px 0;
+  }
+  .error-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+    flex-wrap: wrap;
+  }
+  .btn-cult {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.95rem;
+    transition: all 0.2s ease;
+    text-decoration: none;
+  }
+  .btn-primary-cult {
+    background: #ffffff;
+    color: #09090b;
+  }
+  .btn-primary-cult:hover {
+    background: #e4e4e7;
+    transform: translateY(-1px);
+  }
+  .btn-ghost-cult {
+    background: transparent;
+    color: #fafafa;
+    border: 1px solid #27272a;
+  }
+  .btn-ghost-cult:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: #3f3f46;
+  }
+</style>
+</head>
+<body>
+
+<header class="site-header-simple">
+  <div class="nav-box">
+    <a href="/" class="logo">
+      <span class="logo-gem"></span>
+      Sitewright
+    </a>
+    <a href="/" style="color: #a1a1aa; text-decoration: none; font-size: 0.875rem;">← Back to site</a>
+  </div>
+</header>
+
+<main class="error-container">
+  <div class="error-card">
+    <div class="error-code">
+      <span>●</span> 500 INTERNAL SERVER ERROR
+    </div>
+    <h1 class="error-title">Something Went Wrong</h1>
+    <p class="error-desc">
+      An unexpected condition occurred on the server. The issue has been logged, and our team is actively investigating.
+    </p>
+    <div class="error-actions">
+      <a href="/" class="btn-cult btn-primary-cult">Return to Home</a>
+      <a href="javascript:location.reload()" class="btn-cult btn-ghost-cult">Try Again</a>
+    </div>
+  </div>
+</main>
+
+</body>
+</html>

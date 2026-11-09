@@ -993,5 +993,66 @@ class SitewrightPortalTests(TestCase):
             cfg = get_database_config()
             self.assertEqual(cfg['ENGINE'], 'django.db.backends.sqlite3')
 
+    # --------------------------------------------------------------------------
+    # Production Readiness Tests (Health Checks, Error Pages, Connection Pooling)
+    # --------------------------------------------------------------------------
+
+    def test_health_check_endpoint_ok(self):
+        response = self.client.get('/health/')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data.get('status'), 'ok')
+        self.assertEqual(data.get('database'), 'ok')
+        self.assertIn('cache', data)
+
+    def test_healthz_alias_endpoint(self):
+        response = self.client.get('/healthz')
+        self.assertEqual(response.status_code, 200)
+        data = response.json()
+        self.assertEqual(data.get('status'), 'ok')
+
+    def test_health_check_head_request(self):
+        response = self.client.head('/health/')
+        self.assertEqual(response.status_code, 200)
+
+    def test_health_check_database_unhealthy_returns_503(self):
+        with patch('django.db.connection.cursor', side_effect=Exception("Database connection timeout")):
+            response = self.client.get('/health/')
+            self.assertEqual(response.status_code, 503)
+            data = response.json()
+            self.assertEqual(data.get('status'), 'unhealthy')
+            self.assertIn('unhealthy', data.get('database'))
+
+    def test_database_conn_max_age_and_health_checks_configured(self):
+        from sitewright.settings import get_database_config
+        env = {
+            'POSTGRES_DB': 'sitewright_prod',
+            'DJANGO_DB_CONN_MAX_AGE': '900'
+        }
+        with patch.dict(os.environ, env, clear=True), patch('psycopg.connect'):
+            cfg = get_database_config()
+            self.assertEqual(cfg['CONN_MAX_AGE'], 900)
+            self.assertTrue(cfg.get('CONN_HEALTH_CHECKS'))
+
+    def test_custom_error_templates_render(self):
+        from django.template.loader import render_to_string
+        # Verify 404, 500, 403, and 400 error templates exist and render without crashing
+        rendered_404 = render_to_string('404.html')
+        self.assertIn("404 NOT FOUND", rendered_404)
+        self.assertIn("Sitewright", rendered_404)
+
+        rendered_500 = render_to_string('500.html')
+        self.assertIn("500 INTERNAL SERVER ERROR", rendered_500)
+        self.assertIn("Sitewright", rendered_500)
+
+        rendered_403 = render_to_string('403.html')
+        self.assertIn("403 FORBIDDEN", rendered_403)
+        self.assertIn("Sitewright", rendered_403)
+
+        rendered_400 = render_to_string('400.html')
+        self.assertIn("400 BAD REQUEST", rendered_400)
+        self.assertIn("Sitewright", rendered_400)
+
+
 
 

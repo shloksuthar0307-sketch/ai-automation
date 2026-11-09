@@ -1,0 +1,62 @@
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sitewright_web
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    environment:
+      - DJANGO_DEBUG=False
+      - DJANGO_SECRET_KEY=${DJANGO_SECRET_KEY:-change-this-in-production-random-secret-key-32chars}
+      - DJANGO_ADMIN_URL=${DJANGO_ADMIN_URL:-secure-admin-hq/}
+      - DJANGO_ALLOWED_HOSTS=${DJANGO_ALLOWED_HOSTS:-localhost,127.0.0.1,web}
+      - DATABASE_URL=postgresql://${POSTGRES_USER:-sitewright}:${POSTGRES_PASSWORD:-sitewright_secure_pw}@db:5432/${POSTGRES_DB:-sitewright_db}
+      - REDIS_URL=redis://redis:6379/0
+      - DJANGO_SSL_REDIRECT=False
+      - USE_PROXY_SSL_HEADER=True
+      - TRUSTED_PROXY_COUNT=1
+      - DJANGO_DB_CONN_MAX_AGE=600
+    depends_on:
+      db:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - media_data:/app/media
+
+  db:
+    image: postgres:16-alpine
+    container_name: sitewright_postgres
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=${POSTGRES_DB:-sitewright_db}
+      - POSTGRES_USER=${POSTGRES_USER:-sitewright}
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD:-sitewright_secure_pw}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-sitewright} -d ${POSTGRES_DB:-sitewright_db}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    container_name: sitewright_redis
+    restart: unless-stopped
+    command: ["redis-server", "--appendonly", "yes"]
+    volumes:
+      - redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  postgres_data:
+  redis_data:
+  media_data:
+

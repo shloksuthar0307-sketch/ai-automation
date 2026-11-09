@@ -127,6 +127,7 @@ def get_database_config():
     # 2. Check if PostgreSQL configuration is provided via environment
     db_url = os.environ.get('DATABASE_URL', '').strip()
     postgres_config = None
+    conn_max_age = int(os.environ.get('DJANGO_DB_CONN_MAX_AGE', '600'))
 
     if db_url and (db_url.startswith('postgres://') or db_url.startswith('postgresql://')):
         try:
@@ -139,6 +140,8 @@ def get_database_config():
                 'PASSWORD': unquote(parsed.password or ''),
                 'HOST': parsed.hostname or 'localhost',
                 'PORT': str(parsed.port or 5432),
+                'CONN_MAX_AGE': conn_max_age,
+                'CONN_HEALTH_CHECKS': True,
                 'OPTIONS': {'connect_timeout': 5},
             }
         except Exception:
@@ -153,6 +156,8 @@ def get_database_config():
                 'PASSWORD': os.environ.get('POSTGRES_PASSWORD') or os.environ.get('DB_PASSWORD') or os.environ.get('DJANGO_DB_PASSWORD') or '',
                 'HOST': os.environ.get('POSTGRES_HOST') or os.environ.get('DB_HOST') or os.environ.get('DJANGO_DB_HOST') or 'localhost',
                 'PORT': str(os.environ.get('POSTGRES_PORT') or os.environ.get('DB_PORT') or os.environ.get('DJANGO_DB_PORT') or '5432'),
+                'CONN_MAX_AGE': conn_max_age,
+                'CONN_HEALTH_CHECKS': True,
                 'OPTIONS': {'connect_timeout': 5},
             }
 
@@ -289,6 +294,10 @@ else:
         },
     }
 
+# WhiteNoise Production Settings
+WHITENOISE_MANIFEST_STRICT = os.environ.get('WHITENOISE_MANIFEST_STRICT', 'False').lower() in ('true', '1', 'yes')
+WHITENOISE_MAX_AGE = int(os.environ.get('WHITENOISE_MAX_AGE', '31536000'))
+
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Session Cookie Security
@@ -381,6 +390,16 @@ LOGGING = {
         'sitewright': {
             'handlers': ['console'],
             'level': 'INFO',
+            'propagate': False,
+        },
+        'django.request': {
+            'handlers': ['console'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'django.security': {
+            'handlers': ['console'],
+            'level': 'WARNING',
             'propagate': False,
         },
     },

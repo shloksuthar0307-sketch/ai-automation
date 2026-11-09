@@ -9,6 +9,8 @@ urlpatterns = [
     path('privacy/', views.privacy_view, name='privacy'),
     path('terms/', views.terms_view, name='terms'),
     path('api/quote/', views.submit_quote, name='submit_quote'),
+    path('health/', views.health_check_view, name='health_check'),
+    path('healthz', views.health_check_view, name='healthz'),
 
     # Unique & Secure Admin Portal (Strict Admin Only)
     path('portal-hq/dashboard/', views.admin_dashboard_view, name='admin_dashboard'),
