@@ -346,11 +346,12 @@ else:
 CONTENT_SECURITY_POLICY = {
     "DIRECTIVES": {
         "default-src": [SELF],
-        "script-src": [SELF, "https://plausible.io", NONCE],
-        "style-src": [SELF, "https://fonts.googleapis.com", NONCE],
-        "font-src": [SELF, "https://fonts.gstatic.com"],
-        "img-src": [SELF, "data:"],
-        "connect-src": [SELF, "https://plausible.io"],
+        "script-src": [SELF, "https://plausible.io", "https://chatzy-kb-store.s3.amazonaws.com", NONCE],
+        "style-src": [SELF, "https://fonts.googleapis.com", "https://chatzy-kb-store.s3.amazonaws.com", NONCE],
+        "font-src": [SELF, "https://fonts.gstatic.com", "https://chatzy-kb-store.s3.amazonaws.com"],
+        "img-src": [SELF, "data:", "https://chatzy-kb-store.s3.amazonaws.com", "https:"],
+        "connect-src": [SELF, "https://plausible.io", "https://chatzy-kb-store.s3.amazonaws.com", "https:"],
+        "frame-src": [SELF, "https:"],
     }
 }
 

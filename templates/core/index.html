@@ -1,6 +1,11 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
+{% block extra_css %}
+<!-- Chatzy AI Widget Stylesheet -->
+<link rel="stylesheet" href="https://chatzy-kb-store.s3.amazonaws.com/icons/5ab07987-b5db-477c-82ff-1287e0883acb"/>
+{% endblock %}
+
 {% block content %}
 <div class="wrap">
   <!-- Hero Section (Cult UI Vibe - Solo Freelancer for India Niche) -->
@@ -560,4 +565,9 @@
     </div>
   </div>
 </div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Chatzy AI Widget Script -->
+<script src="https://chatzy-kb-store.s3.amazonaws.com/icons/56706cc4-b3ba-4eba-9610-f2fb07008a5c" id="86dc0393-7a4c-4a20-b895-56b2f017e840" class="chatzy_widget_script" defer></script>
 {% endblock %}
