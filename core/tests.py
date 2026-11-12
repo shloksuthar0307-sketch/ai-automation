@@ -1053,6 +1053,42 @@ class SitewrightPortalTests(TestCase):
         self.assertIn("400 BAD REQUEST", rendered_400)
         self.assertIn("Sitewright", rendered_400)
 
+    # --------------------------------------------------------------------------
+    # Render Cloud Deployment Compatibility Tests
+    # --------------------------------------------------------------------------
+
+    def test_render_environment_auto_detection(self):
+        env = {
+            'RENDER': 'true',
+            'RENDER_EXTERNAL_HOSTNAME': 'sitewright.onrender.com',
+            'DJANGO_DEBUG': 'True',
+        }
+        with patch.dict(os.environ, env, clear=True), patch('dotenv.load_dotenv'):
+            import sitewright.settings
+            importlib.reload(sitewright.settings)
+            self.assertTrue(sitewright.settings.IS_RENDER)
+            self.assertIn('sitewright.onrender.com', sitewright.settings.ALLOWED_HOSTS)
+            self.assertIn('https://sitewright.onrender.com', sitewright.settings.CSRF_TRUSTED_ORIGINS)
+            self.assertTrue(sitewright.settings.USE_PROXY_SSL_HEADER)
+            self.assertEqual(sitewright.settings.TRUSTED_PROXY_COUNT, 1)
+
+    def test_render_database_url_with_sslmode_query_param(self):
+        from sitewright.settings import get_database_config
+        env = {
+            'DATABASE_URL': 'postgresql://render_user:pass123@dpg-abc123-a.oregon-postgres.render.com:5432/sitewright_db?sslmode=require'
+        }
+        with patch.dict(os.environ, env, clear=True), patch('psycopg.connect') as mock_conn:
+            cfg = get_database_config()
+            self.assertEqual(cfg['ENGINE'], 'django.db.backends.postgresql')
+            self.assertEqual(cfg['NAME'], 'sitewright_db')
+            self.assertEqual(cfg['USER'], 'render_user')
+            self.assertEqual(cfg['HOST'], 'dpg-abc123-a.oregon-postgres.render.com')
+            self.assertEqual(cfg['OPTIONS']['sslmode'], 'require')
+            mock_conn.assert_called_once()
+            call_kwargs = mock_conn.call_args[1]
+            self.assertEqual(call_kwargs.get('sslmode'), 'require')
+
+
 
 
 

@@ -1,0 +1,65 @@
+# ==============================================================================
+# Render Infrastructure Blueprint (render.yaml)
+# Docs: https://render.com/docs/blueprint-spec
+# ==============================================================================
+# This blueprint defines the Sitewright web service and managed PostgreSQL
+# database for automated one-click deployments on Render.
+# ==============================================================================
+
+services:
+  # ----------------------------------------------------------------------------
+  # Sitewright Web Application Service (Django 5 + Gunicorn + WhiteNoise)
+  # ----------------------------------------------------------------------------
+  - type: web
+    name: sitewright
+    runtime: python
+    plan: starter
+    region: oregon
+    buildCommand: "./build.sh"
+    startCommand: "gunicorn sitewright.wsgi:application --config gunicorn.conf.py"
+    healthCheckPath: /health/
+    autoDeploy: true
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.8
+
+      - key: DJANGO_DEBUG
+        value: "False"
+
+      # Automatically generate a cryptographically strong secret key on first deploy
+      - key: DJANGO_SECRET_KEY
+        generateValue: true
+
+      # Production custom admin path (change as desired)
+      - key: DJANGO_ADMIN_URL
+        value: secure-admin-hq/
+
+      # Security & Reverse Proxy Settings
+      - key: DJANGO_SSL_REDIRECT
+        value: "True"
+
+      - key: USE_PROXY_SSL_HEADER
+        value: "True"
+
+      - key: TRUSTED_PROXY_COUNT
+        value: "1"
+
+      - key: WHITENOISE_MANIFEST_STRICT
+        value: "False"
+
+      # Connect to the managed PostgreSQL database defined below
+      - key: DATABASE_URL
+        fromDatabase:
+          name: sitewright-db
+          property: connectionString
+
+# ------------------------------------------------------------------------------
+# Managed PostgreSQL Database
+# ------------------------------------------------------------------------------
+databases:
+  - name: sitewright-db
+    databaseName: sitewright
+    user: sitewright_user
+    plan: starter
+    region: oregon
+

@@ -4,8 +4,9 @@ Gunicorn production server configuration for Sitewright.
 import multiprocessing
 import os
 
-# Server socket
-bind = os.environ.get("GUNICORN_BIND", "0.0.0.0:8000")
+# Server socket (Render injects PORT environment variable)
+port = os.environ.get("PORT", "8000")
+bind = os.environ.get("GUNICORN_BIND", f"0.0.0.0:{port}")
 backlog = 2048
 
 # Worker processes

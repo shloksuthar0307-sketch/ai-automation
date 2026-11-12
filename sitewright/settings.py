@@ -38,11 +38,18 @@ if raw_hosts.strip() == '*':
 else:
     ALLOWED_HOSTS = [h.strip() for h in raw_hosts.split(',') if h.strip()]
 
-# Trusted proxy count for client IP extraction
+# Render cloud deployment auto-detection:
+IS_RENDER = os.environ.get('RENDER', '').lower() in ('true', '1')
+render_external_hostname = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if render_external_hostname and render_external_hostname not in ALLOWED_HOSTS:
+    ALLOWED_HOSTS.append(render_external_hostname)
+
+# Trusted proxy count for client IP extraction (Render uses 1 proxy layer)
 try:
-    TRUSTED_PROXY_COUNT = int(os.environ.get('TRUSTED_PROXY_COUNT', '0'))
+    default_proxy_count = '1' if IS_RENDER else '0'
+    TRUSTED_PROXY_COUNT = int(os.environ.get('TRUSTED_PROXY_COUNT', default_proxy_count))
 except ValueError:
-    TRUSTED_PROXY_COUNT = 0
+    TRUSTED_PROXY_COUNT = 1 if IS_RENDER else 0
 
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -131,8 +138,13 @@ def get_database_config():
 
     if db_url and (db_url.startswith('postgres://') or db_url.startswith('postgresql://')):
         try:
-            from urllib.parse import urlparse, unquote
+            from urllib.parse import urlparse, unquote, parse_qs
             parsed = urlparse(db_url)
+            query_params = parse_qs(parsed.query)
+            options = {'connect_timeout': 5}
+            if 'sslmode' in query_params:
+                options['sslmode'] = query_params['sslmode'][0]
+
             postgres_config = {
                 'ENGINE': 'django.db.backends.postgresql',
                 'NAME': unquote(parsed.path.lstrip('/')),
@@ -142,7 +154,7 @@ def get_database_config():
                 'PORT': str(parsed.port or 5432),
                 'CONN_MAX_AGE': conn_max_age,
                 'CONN_HEALTH_CHECKS': True,
-                'OPTIONS': {'connect_timeout': 5},
+                'OPTIONS': options,
             }
         except Exception:
             postgres_config = None
@@ -166,27 +178,24 @@ def get_database_config():
 
     # 3. Test PostgreSQL availability (quick connectivity probe with 2s timeout)
     try:
+        probe_kwargs = {
+            'dbname': postgres_config['NAME'],
+            'user': postgres_config['USER'],
+            'password': postgres_config['PASSWORD'],
+            'host': postgres_config['HOST'],
+            'port': postgres_config['PORT'],
+            'connect_timeout': 2,
+        }
+        if 'sslmode' in postgres_config.get('OPTIONS', {}):
+            probe_kwargs['sslmode'] = postgres_config['OPTIONS']['sslmode']
+
         if driver == 'psycopg':
             import psycopg
-            conn = psycopg.connect(
-                dbname=postgres_config['NAME'],
-                user=postgres_config['USER'],
-                password=postgres_config['PASSWORD'],
-                host=postgres_config['HOST'],
-                port=postgres_config['PORT'],
-                connect_timeout=2,
-            )
+            conn = psycopg.connect(**probe_kwargs)
             conn.close()
         elif driver == 'psycopg2':
             import psycopg2
-            conn = psycopg2.connect(
-                dbname=postgres_config['NAME'],
-                user=postgres_config['USER'],
-                password=postgres_config['PASSWORD'],
-                host=postgres_config['HOST'],
-                port=postgres_config['PORT'],
-                connect_timeout=2,
-            )
+            conn = psycopg2.connect(**probe_kwargs)
             conn.close()
 
         # PostgreSQL is reachable and verified
@@ -307,7 +316,10 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 SESSION_COOKIE_SAMESITE = 'Lax'
 
 # Production Security Headers & Reverse Proxy Settings
-USE_PROXY_SSL_HEADER = os.environ.get('USE_PROXY_SSL_HEADER', 'False').lower() in ('true', '1', 'yes')
+USE_PROXY_SSL_HEADER = os.environ.get(
+    'USE_PROXY_SSL_HEADER',
+    'True' if IS_RENDER else 'False'
+).lower() in ('true', '1', 'yes')
 
 ssl_redirect_env = os.environ.get('DJANGO_SSL_REDIRECT')
 if ssl_redirect_env is not None:
@@ -354,6 +366,13 @@ AXES_HANDLER = 'core.axes_handler.SitewrightAxesHandler'
 raw_csrf_origins = os.environ.get('CSRF_TRUSTED_ORIGINS', '')
 if raw_csrf_origins:
     CSRF_TRUSTED_ORIGINS = [origin.strip() for origin in raw_csrf_origins.split(',') if origin.strip()]
+else:
+    CSRF_TRUSTED_ORIGINS = []
+
+if render_external_hostname:
+    render_origin = f"https://{render_external_hostname}"
+    if render_origin not in CSRF_TRUSTED_ORIGINS:
+        CSRF_TRUSTED_ORIGINS.append(render_origin)
 
 # Email Notification Settings
 EMAIL_BACKEND = os.environ.get('DJANGO_EMAIL_BACKEND', 'django.core.mail.backends.console.EmailBackend')
