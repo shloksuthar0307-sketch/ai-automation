@@ -18,8 +18,9 @@ from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_http_methods
 from django.contrib.auth import authenticate, login, logout
 
-from .models import QuoteRequest, PortfolioProject, Testimonial, FAQ, PLAN_PRICES
+from .models import QuoteRequest, PortfolioProject, Testimonial, FAQ, LandingPage, BlogPost, PLAN_PRICES
 from .forms import QuoteForm
+from .schema import build_schema_graph
 
 logger = logging.getLogger(__name__)
 
@@ -440,16 +441,202 @@ def terms_view(request):
 
 def robots_txt_view(request):
     """
-    Generates dynamic robots.txt pointing to the XML sitemap and shielding admin areas.
+    Generates dynamic robots.txt explicitly allowing modern generative AI search bots
+    (GPTBot, ClaudeBot, PerplexityBot, etc.), pointing to the canonical XML sitemap,
+    and shielding administrative routes.
     """
-    sitemap_url = request.build_absolute_uri(reverse('django.contrib.sitemaps.views.sitemap'))
-    lines = [
+    site_url = getattr(settings, 'SITE_URL', 'https://sitewright.in').rstrip('/')
+    sitemap_url = f"{site_url}{reverse('django.contrib.sitemaps.views.sitemap')}"
+    admin_path = getattr(settings, 'DJANGO_ADMIN_URL', 'admin/').strip('/')
+    admin_disallow = f"/{admin_path}/" if admin_path else "/admin/"
+
+    ai_bots = [
+        "GPTBot",
+        "OAI-SearchBot",
+        "ChatGPT-User",
+        "ClaudeBot",
+        "Claude-SearchBot",
+        "PerplexityBot",
+        "Google-Extended",
+        "Applebot-Extended",
+    ]
+
+    lines = []
+    for bot in ai_bots:
+        lines.append(f"User-agent: {bot}")
+        lines.append("Allow: /")
+        lines.append("Disallow: /portal-hq/")
+        lines.append(f"Disallow: {admin_disallow}")
+        lines.append("")
+
+    lines.extend([
         "User-agent: *",
         "Allow: /",
         "Disallow: /portal-hq/",
+        f"Disallow: {admin_disallow}",
+        "",
         f"Sitemap: {sitemap_url}"
-    ]
+    ])
     return HttpResponse("\n".join(lines), content_type="text/plain")
+
+
+def llms_txt_view(request):
+    """
+    Generates an authoritative /llms.txt plain text file designed for Large Language Models
+    and generative search engines (ChatGPT, Claude, Perplexity, Gemini, Google AI Overviews).
+    Presents factual details on services, pricing, location, and key URLs.
+    """
+    site_url = getattr(settings, 'SITE_URL', 'https://sitewright.in').rstrip('/')
+    developer_name = getattr(settings, 'DEVELOPER_NAME', 'Shlok Suthar')
+    developer_city = getattr(settings, 'DEVELOPER_CITY', 'Ahmedabad, India')
+    admin_email = getattr(settings, 'ADMIN_NOTIFICATION_EMAIL', 'admin@sitewright.ai')
+    github_url = getattr(settings, 'GITHUB_URL', 'https://github.com/shloksuthar0307-sketch')
+
+    content = f"""# Sitewright
+
+> Solo freelance full-stack website developer in {developer_city}.
+
+## Site Summary
+Sitewright is the solo freelance web engineering practice of {developer_name}, based in Ahmedabad, Gujarat, India. Specializing in fast, high-converting business websites, custom WhatsApp automation workflows, and tailored AI web tools for clinics, restaurants, coaching academies, and growing enterprises across India. Projects ship in 5 to 7 days with transparent, fixed pricing and direct developer collaboration.
+
+## Services
+- Custom Websites: Mobile-responsive business websites, landing pages, digital menus, clinic appointment booking systems.
+- WhatsApp Automation: Contextual click-to-chat widgets, instant lead notifications, appointment alerts, inquiry routing.
+- Custom Web Platforms & AI Tools: Admin dashboards, client portals, custom workflows, API integrations.
+- Local SEO: Google-compliant Schema.org structured data, geographic Ahmedabad metadata, technical performance optimization.
+- Maintenance & Support: Security patches, regular updates, bug fixes, hosting setup.
+
+## Pricing (INR)
+- Starter Plan: ₹7,000 one-time (single-page website, responsive layout, WhatsApp button, contact form, 14 days support).
+- Business Plan: ₹25,000 one-time (up to 6 custom pages, conversion copy, local SEO, schema metadata, 30 days support).
+- Custom / Automation: from ₹45,000 one-time (custom systems, WhatsApp notifications, database models, admin CRM, 60 days support).
+- Ongoing Maintenance: from ₹2,500/month (optional updates, backups, security).
+
+## Location
+- City: Ahmedabad, Gujarat, India
+- Coordinates: 23.0225° N, 72.5714° E
+- Service Area: Ahmedabad, Gujarat, and clients across India
+
+## Contact & Profile
+- Founder: {developer_name}
+- Role: Solo Freelance Full-Stack Developer
+- Email: {admin_email}
+- Website: {site_url}/
+- GitHub: {github_url}
+- WhatsApp: Inquire via website or WhatsApp button
+
+## Key URLs
+- Homepage: {site_url}/
+- Website Developer in Ahmedabad: {site_url}/website-developer-ahmedabad/
+- WhatsApp Automation for Business: {site_url}/whatsapp-automation-for-business/
+- Clinic Website Development: {site_url}/clinic-website-development/
+- Restaurant Website Development: {site_url}/restaurant-website-development/
+- Coaching Class Website Development: {site_url}/coaching-class-website-development/
+- Blog & Insights: {site_url}/blog/
+- Privacy Policy: {site_url}/privacy/
+- Terms of Service: {site_url}/terms/
+"""
+    return HttpResponse(content.strip(), content_type="text/plain")
+
+
+def landing_page_detail(request, slug):
+    """
+    Renders individual Phase 2 keyword-targeted landing pages with rich content (600+ words),
+    custom FAQs, internal linking, and Schema.org FAQPage structured data.
+    """
+    landing_page = get_object_or_404(LandingPage, slug=slug, is_published=True)
+
+    extra_entities = []
+    if landing_page.faq_data and isinstance(landing_page.faq_data, list):
+        faq_elements = []
+        for f in landing_page.faq_data:
+            if isinstance(f, dict) and 'question' in f and 'answer' in f:
+                faq_elements.append({
+                    "@type": "Question",
+                    "name": f['question'],
+                    "acceptedAnswer": {
+                        "@type": "Answer",
+                        "text": f['answer']
+                    }
+                })
+        if faq_elements:
+            site_url = getattr(settings, 'SITE_URL', 'https://sitewright.in').rstrip('/')
+            extra_entities.append({
+                "@type": "FAQPage",
+                "@id": f"{site_url}/{slug}/#faqpage",
+                "mainEntity": faq_elements
+            })
+
+    schema_json_ld = build_schema_graph(
+        request=request,
+        page_title=landing_page.title,
+        extra_entities=extra_entities,
+        is_home=False
+    )
+
+    other_services = LandingPage.objects.filter(is_published=True).exclude(id=landing_page.id)
+
+    return render(request, 'core/landing_page.html', {
+        'page': landing_page,
+        'other_services': other_services,
+        'schema_json_ld': schema_json_ld,
+    })
+
+
+def blog_index(request):
+    """
+    Renders the blog index listing all published SEO and strategy articles.
+    """
+    posts = BlogPost.objects.filter(is_published=True).order_by('-published_date')
+    schema_json_ld = build_schema_graph(
+        request=request,
+        page_title="Blog & Insights | Sitewright",
+        is_home=False
+    )
+    return render(request, 'core/blog_index.html', {
+        'posts': posts,
+        'schema_json_ld': schema_json_ld,
+    })
+
+
+def blog_detail(request, slug):
+    """
+    Renders individual blog articles with structured BlogPosting Schema metadata.
+    """
+    post = get_object_or_404(BlogPost, slug=slug, is_published=True)
+    site_url = getattr(settings, 'SITE_URL', 'https://sitewright.in').rstrip('/')
+    canonical_url = f"{site_url}{post.get_absolute_url()}"
+
+    article_entity = {
+        "@type": "BlogPosting",
+        "@id": f"{canonical_url}#article",
+        "headline": post.title,
+        "description": post.meta_description,
+        "datePublished": post.published_date.isoformat(),
+        "dateModified": post.updated_at.isoformat(),
+        "author": {
+            "@id": f"{site_url}/#founder"
+        },
+        "publisher": {
+            "@id": f"{site_url}/#professionalservice"
+        },
+        "mainEntityOfPage": canonical_url
+    }
+
+    schema_json_ld = build_schema_graph(
+        request=request,
+        page_title=post.title,
+        extra_entities=[article_entity],
+        is_home=False
+    )
+
+    recent_posts = BlogPost.objects.filter(is_published=True).exclude(id=post.id)[:3]
+
+    return render(request, 'core/blog_detail.html', {
+        'post': post,
+        'recent_posts': recent_posts,
+        'schema_json_ld': schema_json_ld,
+    })
 
 
 # ==============================================================================

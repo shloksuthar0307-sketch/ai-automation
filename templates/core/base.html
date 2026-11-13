@@ -1,61 +1,55 @@
 {% load static %}
 <!DOCTYPE html>
-<html lang="en" data-theme="cult">
+<html lang="en-IN" data-theme="cult">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>{% block title %}{{ developer_name }} – Freelance Full-Stack Developer | Sitewright{% endblock %}</title>
 <meta name="description" content="{% block meta_description %}I build fast, high-converting websites and automations for clinics, restaurants, coaching classes, and local businesses in India. Live in about a week.{% endblock %}">
+<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">
 <meta name="theme-color" content="#09090b">
-<link rel="canonical" href="{{ request.build_absolute_uri }}">
+<link rel="canonical" href="{{ canonical_url }}">
 
 <!-- Favicon (Cult UI Monochrome Geometric Gem) -->
 <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><rect width='24' height='24' rx='6' fill='%2309090b'/><path d='M12 4L4 12l8 8 8-8z' fill='%23ffffff'/></svg>">
 
 <!-- Open Graph / Facebook -->
 <meta property="og:type" content="website">
-<meta property="og:url" content="{{ request.build_absolute_uri }}">
-<meta property="og:title" content="{% block og_title %}{{ developer_name }} – Freelance Full-Stack Developer{% endblock %}">
+<meta property="og:url" content="{{ canonical_url }}">
+<meta property="og:title" content="{% block og_title %}{% block og_title_fallback %}{{ developer_name }} – Freelance Full-Stack Developer{% endblock %}{% endblock %}">
 <meta property="og:description" content="{% block og_desc %}I build fast, high-converting websites and custom automations for local businesses in India. Live in about a week.{% endblock %}">
 <meta property="og:locale" content="en_IN">
 <meta property="og:site_name" content="Sitewright">
+<meta property="og:image" content="{% block og_image %}{{ site_url }}{% static 'core/img/og-image.png' %}{% endblock %}">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:alt" content="{% block og_image_alt %}Sitewright – Website Developer in Ahmedabad{% endblock %}">
 
 <!-- Twitter -->
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:url" content="{{ request.build_absolute_uri }}">
-<meta name="twitter:title" content="{% block tw_title %}{{ developer_name }} – Freelance Web Developer{% endblock %}">
+<meta name="twitter:url" content="{{ canonical_url }}">
+<meta name="twitter:title" content="{% block tw_title %}{% block tw_title_fallback %}{{ developer_name }} – Freelance Web Developer{% endblock %}{% endblock %}">
 <meta name="twitter:description" content="{% block tw_desc %}High-converting websites for clinics, restaurants, and businesses in India. Fast turnaround, transparent pricing.{% endblock %}">
+<meta name="twitter:image" content="{% block tw_image %}{{ site_url }}{% static 'core/img/og-image.png' %}{% endblock %}">
+<meta name="twitter:image:alt" content="{% block tw_image_alt %}Sitewright – Website Developer in Ahmedabad{% endblock %}">
 
-<!-- JSON-LD ProfessionalService Schema -->
+<!-- JSON-LD Structured Data Schema -->
+{% block structured_data %}
 <script type="application/ld+json" nonce="{{ request.csp_nonce }}">
-{
-  "@context": "https://schema.org",
-  "@type": "ProfessionalService",
-  "name": "Sitewright – {{ developer_name }}",
-  "description": "Solo freelance full-stack developer in {{ developer_city }} building fast, high-converting websites and automations for clinics, restaurants, coaching academies, and local businesses.",
-  "url": "{{ request.scheme }}://{{ request.get_host }}/",
-  "priceRange": "₹₹",
-  "address": {
-    "@type": "PostalAddress",
-    "addressLocality": "{{ developer_city }}",
-    "addressCountry": "IN"
-  },
-  "founder": {
-    "@type": "Person",
-    "name": "{{ developer_name }}"
-  },
-  "knowsAbout": ["Django", "Python", "JavaScript", "Web Development", "WhatsApp Automation"]
-}
+{{ schema_json_ld|safe }}
 </script>
+{% endblock %}
 
 {% if plausible_domain %}
 <!-- Privacy-friendly Plausible Analytics -->
 <script defer data-domain="{{ plausible_domain }}" src="https://plausible.io/js/script.tagged-events.js"></script>
 {% endif %}
 
-<!-- Reduced Google Fonts (Only Syne & DM Sans with font-display: swap) -->
+<!-- Fonts (Syne & DM Sans with font-display: swap and preloading) -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Syne:wght@700;800&display=swap" rel="stylesheet">
 
 <link rel="stylesheet" href="{% static 'core/css/style.css' %}">
@@ -66,7 +60,7 @@
 <!-- Cult UI Floating Frosted Navbar -->
 <header class="site-header" id="header">
   <div class="nav-container">
-    <a href="#top" class="logo">
+    <a href="{% url 'core:index' %}" class="logo" title="Sitewright Home">
       <span class="logo-gem"></span>
       Sitewright
     </a>
@@ -76,12 +70,13 @@
       <div class="nav-pill-indicator" id="navIndicator"></div>
       <nav aria-label="Main Navigation">
         <ul class="nav-links" id="navLinksList">
-          <li><a href="#services">Services</a></li>
-          <li><a href="#about">About</a></li>
-          <li><a href="#process">How It Works</a></li>
-          <li><a href="#portfolio">Our Work</a></li>
-          <li><a href="#pricing">Pricing</a></li>
-          <li><a href="#faq">FAQ</a></li>
+          <li><a href="{% if request.path == '/' %}#services{% else %}{% url 'core:index' %}#services{% endif %}">Services</a></li>
+          <li><a href="{% if request.path == '/' %}#about{% else %}{% url 'core:index' %}#about{% endif %}">About</a></li>
+          <li><a href="{% if request.path == '/' %}#process{% else %}{% url 'core:index' %}#process{% endif %}">How It Works</a></li>
+          <li><a href="{% if request.path == '/' %}#portfolio{% else %}{% url 'core:index' %}#portfolio{% endif %}">Our Work</a></li>
+          <li><a href="{% if request.path == '/' %}#pricing{% else %}{% url 'core:index' %}#pricing{% endif %}">Pricing</a></li>
+          <li><a href="{% if request.path == '/' %}#faq{% else %}{% url 'core:index' %}#faq{% endif %}">FAQ</a></li>
+          <li><a href="{% url 'core:blog_index' %}">Blog</a></li>
         </ul>
       </nav>
     </div>
@@ -91,7 +86,7 @@
       {% if booking_url %}
       <a class="btn btn-ghost btn-sm nav-booking-btn" href="{{ booking_url }}" target="_blank" rel="noopener">Book a free 15-min call</a>
       {% endif %}
-      <a class="btn btn-primary btn-sm nav-quote-btn" href="#contact">Get a quote</a>
+      <a class="btn btn-primary btn-sm nav-quote-btn" href="{% if request.path == '/' %}#contact{% else %}{% url 'core:index' %}#contact{% endif %}">Get a quote</a>
 
       <!-- Mobile Hamburger Toggle Button (<900px) -->
       <button type="button" class="mobile-nav-toggle" id="mobileNavToggle" aria-label="Toggle navigation menu" aria-expanded="false" aria-controls="mobileNavMenu">
@@ -106,18 +101,19 @@
   <div class="mobile-nav-menu" id="mobileNavMenu" aria-hidden="true">
     <nav aria-label="Mobile Navigation">
       <ul class="mobile-nav-list">
-        <li><a href="#services" class="mobile-nav-link">Services</a></li>
-        <li><a href="#about" class="mobile-nav-link">About</a></li>
-        <li><a href="#process" class="mobile-nav-link">How It Works</a></li>
-        <li><a href="#portfolio" class="mobile-nav-link">Our Work</a></li>
-        <li><a href="#pricing" class="mobile-nav-link">Pricing</a></li>
-        <li><a href="#faq" class="mobile-nav-link">FAQ</a></li>
+        <li><a href="{% if request.path == '/' %}#services{% else %}{% url 'core:index' %}#services{% endif %}" class="mobile-nav-link">Services</a></li>
+        <li><a href="{% if request.path == '/' %}#about{% else %}{% url 'core:index' %}#about{% endif %}" class="mobile-nav-link">About</a></li>
+        <li><a href="{% if request.path == '/' %}#process{% else %}{% url 'core:index' %}#process{% endif %}" class="mobile-nav-link">How It Works</a></li>
+        <li><a href="{% if request.path == '/' %}#portfolio{% else %}{% url 'core:index' %}#portfolio{% endif %}" class="mobile-nav-link">Our Work</a></li>
+        <li><a href="{% if request.path == '/' %}#pricing{% else %}{% url 'core:index' %}#pricing{% endif %}" class="mobile-nav-link">Pricing</a></li>
+        <li><a href="{% if request.path == '/' %}#faq{% else %}{% url 'core:index' %}#faq{% endif %}" class="mobile-nav-link">FAQ</a></li>
+        <li><a href="{% url 'core:blog_index' %}" class="mobile-nav-link">Blog</a></li>
       </ul>
       <div class="mobile-nav-actions">
         {% if booking_url %}
         <a class="btn btn-ghost btn-sm mobile-nav-link" href="{{ booking_url }}" target="_blank" rel="noopener">Book a free 15-min call ↗</a>
         {% endif %}
-        <a class="btn btn-primary btn-sm mobile-nav-link" href="#contact">Get a quote →</a>
+        <a class="btn btn-primary btn-sm mobile-nav-link" href="{% if request.path == '/' %}#contact{% else %}{% url 'core:index' %}#contact{% endif %}">Get a quote →</a>
       </div>
     </nav>
   </div>
@@ -148,11 +144,23 @@
         <a href="{{ linkedin_url }}" target="_blank" rel="noopener">LinkedIn</a>
         {% endif %} -->
       </p>
+      <!-- Phase 2 SEO Service & Location Links -->
+      <div class="footer-seo-links" style="margin-top: 14px; font-size: 13px; line-height: 1.8; color: var(--muted);">
+        <strong style="color: var(--ink-heading); display: block; margin-bottom: 4px;">Services in Ahmedabad &amp; India:</strong>
+        <a href="/website-developer-ahmedabad/">Website Developer Ahmedabad</a> <span class="footer-sep">•</span>
+        <a href="/whatsapp-automation-for-business/">WhatsApp Automation</a> <span class="footer-sep">•</span>
+        <a href="/clinic-website-development/">Clinic Websites</a> <span class="footer-sep">•</span>
+        <a href="/restaurant-website-development/">Restaurant Websites</a> <span class="footer-sep">•</span>
+        <a href="/coaching-class-website-development/">Coaching Class Websites</a> <span class="footer-sep">•</span>
+        <a href="{% url 'core:blog_index' %}">Blog &amp; Insights</a>
+      </div>
     </div>
     <div class="footer-links">
       <a href="{% url 'core:privacy' %}">Privacy Policy</a>
       <span class="footer-sep">•</span>
       <a href="{% url 'core:terms' %}">Terms of Service</a>
+      <span class="footer-sep">•</span>
+      <a href="{% url 'llms_txt' %}">llms.txt</a>
     </div>
   </footer>
 </div>

@@ -1,5 +1,24 @@
 from django.contrib import admin
-from .models import QuoteRequest, PortfolioProject, Testimonial, FAQ
+from .models import QuoteRequest, PortfolioProject, Testimonial, FAQ, LandingPage, BlogPost
+
+
+@admin.register(LandingPage)
+class LandingPageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'target_plan', 'is_published', 'updated_at')
+    list_editable = ('is_published',)
+    list_filter = ('is_published', 'target_plan')
+    search_fields = ('title', 'slug', 'h1', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+
+
+@admin.register(BlogPost)
+class BlogPostAdmin(admin.ModelAdmin):
+    list_display = ('title', 'slug', 'category', 'is_published', 'published_date')
+    list_editable = ('is_published',)
+    list_filter = ('is_published', 'category')
+    search_fields = ('title', 'slug', 'content')
+    prepopulated_fields = {'slug': ('title',)}
+
 
 
 @admin.register(QuoteRequest)

@@ -258,10 +258,13 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-LANGUAGE_CODE = 'en-us'
+LANGUAGE_CODE = 'en-in'
 TIME_ZONE = 'Asia/Kolkata'
 USE_I18N = True
 USE_TZ = True
+
+# Primary Site URL (Canonical, SEO, GEO, AEO, and Sitemaps)
+SITE_URL = os.environ.get('SITE_URL', 'https://sitewright.in').rstrip('/')
 
 STATIC_URL = '/static/'
 STATICFILES_DIRS = [

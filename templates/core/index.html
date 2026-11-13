@@ -1,9 +1,55 @@
 {% extends 'core/base.html' %}
 {% load static %}
 
+{% block title %}Website Developer in Ahmedabad | Web, WhatsApp and AI{% endblock %}
+{% block meta_description %}Website developer in Ahmedabad building fast custom websites, WhatsApp automation, and custom AI tools for local businesses. Live in about a week from ₹7,000.{% endblock %}
+
+{% block og_title %}Website Developer in Ahmedabad | Web, WhatsApp and AI{% endblock %}
+{% block og_desc %}Website developer in Ahmedabad building fast custom websites, WhatsApp automation, and custom AI tools for local businesses. Live in about a week from ₹7,000.{% endblock %}
+
+{% block tw_title %}Website Developer in Ahmedabad | Web, WhatsApp and AI{% endblock %}
+{% block tw_desc %}Website developer in Ahmedabad building fast custom websites, WhatsApp automation, and custom AI tools for local businesses. Live in about a week from ₹7,000.{% endblock %}
+
 {% block extra_css %}
-<!-- Chatzy AI Widget Stylesheet -->
-<link rel="stylesheet" href="https://chatzy-kb-store.s3.amazonaws.com/icons/5ab07987-b5db-477c-82ff-1287e0883acb"/>
+<style nonce="{{ request.csp_nonce }}">
+.answer-summary-card {
+  margin-top: 18px;
+  margin-bottom: 24px;
+  padding: 16px 20px;
+  background: rgba(24, 24, 27, 0.65);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #10b981;
+  border-radius: 12px;
+  backdrop-filter: blur(10px);
+}
+.answer-summary-lead {
+  font-size: 15.5px;
+  line-height: 1.6;
+  color: #e4e4e7;
+  margin: 0 0 10px 0;
+}
+.answer-summary-meta {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  flex-wrap: wrap;
+  font-size: 12.5px;
+  color: #a1a1aa;
+}
+.summary-badge {
+  color: #34d399;
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+.summary-date {
+  color: #d4d4d8;
+}
+.summary-location {
+  color: #a1a1aa;
+}
+</style>
 {% endblock %}
 
 {% block content %}
@@ -14,9 +60,20 @@
       <div class="hero-tag">
         <span class="pulse-dot"></span> Solo Full-Stack Engineer • Custom Web &amp; AI Apps
       </div>
-      <h1>I build fast, high-converting websites &amp; <span class="gradient-text">custom web platforms</span>.</h1>
-      <p>From high-performance business sites to custom AI tools and automated client portals. Direct pairing with a solo full-stack engineer—shipped in about a week with zero agency bloat.</p>
+      <h1>Website Developer in Ahmedabad — Fast Websites &amp; <span class="gradient-text">AI Tools</span></h1>
       
+      <!-- AEO Answer-First Direct Summary (49 words, AEO/GEO/Voice Search optimized) -->
+      <div class="answer-summary-card">
+        <p class="answer-summary-lead">
+          I am Shlok Suthar, a solo freelance full-stack website developer in Ahmedabad, India. I build fast, high-converting business websites, custom WhatsApp automation, and tailored AI web tools for clinics, restaurants, and local businesses. Typical projects launch in 5 to 7 days, with fixed-price transparent project packages starting at ₹7,000.
+        </p>
+        <div class="answer-summary-meta">
+          <span class="summary-badge">✓ Direct Answer</span>
+          <span class="summary-date">Last updated: <time datetime="2026-11-13">November 2026</time></span>
+          <span class="summary-location">📍 Ahmedabad, Gujarat</span>
+        </div>
+      </div>
+
       <div class="hero-actions">
         <a class="btn btn-primary btn-lg" href="#contact">Start My Website</a>
         <a class="btn btn-ghost btn-lg" href="#portfolio">See My Work</a>
@@ -221,7 +278,7 @@
       <article class="portfolio-card" data-slug="{{ project.slug }}">
         <div class="portfolio-card-media">
           {% if project.image %}
-          <img src="{{ project.image.url }}" alt="{{ project.title }}" loading="lazy" class="portfolio-img">
+          <img src="{{ project.image.url }}" alt="{{ project.title }}" width="600" height="340" loading="lazy" class="portfolio-img">
           {% else %}
           <div class="portfolio-placeholder-media">
             <div style="display: flex; justify-content: space-between; align-items: center; width: 100%;">
@@ -400,7 +457,7 @@
       <blockquote class="testimonial-quote">“{{ t.quote }}”</blockquote>
       <div class="testimonial-client-row">
         {% if t.photo %}
-        <img src="{{ t.photo.url }}" alt="{{ t.client_name }}" class="testimonial-avatar" loading="lazy">
+        <img src="{{ t.photo.url }}" alt="{{ t.client_name }}" width="48" height="48" class="testimonial-avatar" loading="lazy">
         {% else %}
         <div class="testimonial-avatar-fallback">{{ t.client_name|slice:":1" }}</div>
         {% endif %}
@@ -568,6 +625,47 @@
 {% endblock %}
 
 {% block extra_js %}
-<!-- Chatzy AI Widget Script -->
-<script src="https://chatzy-kb-store.s3.amazonaws.com/icons/56706cc4-b3ba-4eba-9610-f2fb07008a5c" id="86dc0393-7a4c-4a20-b895-56b2f017e840" class="chatzy_widget_script" defer></script>
+<!-- Chatzy AI Widget: Loaded on Idle or First Interaction for Optimal LCP / CLS -->
+<script nonce="{{ request.csp_nonce }}">
+(function() {
+  var chatzyLoaded = false;
+  function initChatzy() {
+    if (chatzyLoaded) return;
+    chatzyLoaded = true;
+
+    // Cleanup interaction listeners
+    ['scroll', 'keydown', 'touchstart', 'click', 'mousemove'].forEach(function(evt) {
+      window.removeEventListener(evt, initChatzy, { passive: true });
+    });
+
+    // 1. Inject Stylesheet asynchronously
+    var link = document.createElement('link');
+    link.rel = 'stylesheet';
+    link.href = 'https://chatzy-kb-store.s3.amazonaws.com/icons/5ab07987-b5db-477c-82ff-1287e0883acb';
+    document.head.appendChild(link);
+
+    // 2. Inject Script
+    var s = document.createElement('script');
+    s.src = 'https://chatzy-kb-store.s3.amazonaws.com/icons/56706cc4-b3ba-4eba-9610-f2fb07008a5c';
+    s.id = '86dc0393-7a4c-4a20-b895-56b2f017e840';
+    s.className = 'chatzy_widget_script';
+    s.async = true;
+    document.body.appendChild(s);
+  }
+
+  // Load when browser is idle or after delay
+  if ('requestIdleCallback' in window) {
+    window.requestIdleCallback(function() {
+      setTimeout(initChatzy, 3500);
+    });
+  } else {
+    setTimeout(initChatzy, 4000);
+  }
+
+  // Also trigger immediately on user interaction
+  ['scroll', 'keydown', 'touchstart', 'click', 'mousemove'].forEach(function(evt) {
+    window.addEventListener(evt, initChatzy, { once: true, passive: true });
+  });
+})();
+</script>
 {% endblock %}

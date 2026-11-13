@@ -2,7 +2,9 @@ import io
 import importlib
 import json
 import os
+import re
 from unittest.mock import patch
+from django.conf import settings
 from django.test import TestCase, Client
 from django.urls import reverse
 from django.contrib.auth import get_user_model
@@ -595,7 +597,7 @@ class SitewrightPortalTests(TestCase):
         content = res.content.decode('utf-8')
         self.assertIn("User-agent: *", content)
         self.assertIn("Disallow: /portal-hq/", content)
-        self.assertIn("Sitemap: http://testserver/sitemap.xml", content)
+        self.assertIn("/sitemap.xml", content)
 
     def test_sitemap_xml_renders(self):
         res = self.client.get('/sitemap.xml')
@@ -1087,6 +1089,273 @@ class SitewrightPortalTests(TestCase):
             mock_conn.assert_called_once()
             call_kwargs = mock_conn.call_args[1]
             self.assertEqual(call_kwargs.get('sslmode'), 'require')
+
+
+class SitewrightSEOAEOAndGEOTests(TestCase):
+    def setUp(self):
+        cache.clear()
+        self.client = Client()
+
+    def test_canonical_has_no_query_string_and_uses_site_url(self):
+        response = self.client.get('/?ref=twitter&utm_source=google&page=2')
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode('utf-8')
+
+        # Check html lang="en-IN"
+        self.assertIn('<html lang="en-IN"', html)
+
+        # Check canonical, og:url, and twitter:url
+        canonical_match = re.search(r'rel=["\']canonical["\'] href=["\']([^"\']+)["\']', html)
+        self.assertTrue(canonical_match)
+        self.assertEqual(canonical_match.group(1), 'https://sitewright.in/')
+        self.assertNotIn('?', canonical_match.group(1))
+        self.assertNotIn('onrender', canonical_match.group(1))
+
+        og_url_match = re.search(r'property=["\']og:url["\'] content=["\']([^"\']+)["\']', html)
+        self.assertTrue(og_url_match)
+        self.assertEqual(og_url_match.group(1), 'https://sitewright.in/')
+
+        tw_url_match = re.search(r'name=["\']twitter:url["\'] content=["\']([^"\']+)["\']', html)
+        self.assertTrue(tw_url_match)
+        self.assertEqual(tw_url_match.group(1), 'https://sitewright.in/')
+
+    def test_json_ld_parses_and_has_required_entities(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode('utf-8')
+
+        # Check that '<' is escaped as \u003c in JSON-LD script
+        scripts = re.findall(r'<script type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL)
+        self.assertTrue(len(scripts) >= 1)
+        raw_json_script = scripts[0]
+        self.assertNotIn('<', raw_json_script)
+
+        # JSON should parse cleanly
+        data = json.loads(raw_json_script)
+        self.assertIn('@graph', data)
+        types = [e.get('@type') for e in data['@graph']]
+        self.assertIn('WebSite', types)
+        self.assertIn('ProfessionalService', types)
+        self.assertIn('Person', types)
+        self.assertIn('FAQPage', types)
+
+        # Validate ProfessionalService
+        ps = next(e for e in data['@graph'] if e['@type'] == 'ProfessionalService')
+        self.assertEqual(ps['address']['addressLocality'], 'Ahmedabad')
+        self.assertEqual(ps['address']['addressCountry'], 'IN')
+        self.assertTrue(any(a['name'] == 'Ahmedabad' for a in ps['areaServed']))
+        self.assertIn('hasOfferCatalog', ps)
+        offers = ps['hasOfferCatalog']['itemListElement']
+        self.assertEqual(len(offers), 3)
+        self.assertTrue(any(o['name'] == 'Starter Website Plan' and o['price'] == '7000' for o in offers))
+        self.assertTrue(any(o['name'] == 'Business Website Plan' and o['price'] == '25000' for o in offers))
+        self.assertTrue(any(o['name'] == 'Custom / Automation Plan' and o['price'] == '45000' for o in offers))
+
+    def test_faqpage_matches_database(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode('utf-8')
+        scripts = re.findall(r'<script type=["\']application/ld\+json["\'][^>]*>(.*?)</script>', html, re.DOTALL)
+        data = json.loads(scripts[0])
+        faq_page = next(e for e in data['@graph'] if e['@type'] == 'FAQPage')
+        json_questions = [q['name'] for q in faq_page['mainEntity']]
+
+        db_faqs = list(FAQ.objects.filter(is_published=True).values_list('question', flat=True))
+        self.assertEqual(len(json_questions), len(db_faqs))
+        self.assertEqual(set(json_questions), set(db_faqs))
+
+    def test_on_page_seo_titles_descriptions_and_h1(self):
+        response = self.client.get('/')
+        self.assertEqual(response.status_code, 200)
+        html = response.content.decode('utf-8')
+
+        # Title check (<= 60 chars and contains 'Website Developer in Ahmedabad')
+        title_match = re.search(r'<title>(.*?)</title>', html)
+        self.assertTrue(title_match)
+        title = title_match.group(1).strip()
+        self.assertLessEqual(len(title), 60)
+        self.assertIn('Website Developer in Ahmedabad', title)
+
+        # Meta description (150-160 chars and contains 'Website developer in Ahmedabad')
+        desc_match = re.search(r'<meta name=["\']description["\'] content=["\']([^"\']+)["\']', html)
+        self.assertTrue(desc_match)
+        desc = desc_match.group(1).strip()
+        self.assertGreaterEqual(len(desc), 150)
+        self.assertLessEqual(len(desc), 160)
+        self.assertIn('Website developer in Ahmedabad', desc)
+
+        # Strictly ONE H1 containing 'Ahmedabad'
+        h1_matches = re.findall(r'<h1[^>]*>(.*?)</h1>', html, re.DOTALL)
+        self.assertEqual(len(h1_matches), 1)
+        self.assertIn('Ahmedabad', h1_matches[0])
+
+        # Visible 40-60 word answer-first summary
+        summary_match = re.search(r'<div class=["\']answer-summary-card["\'][^>]*>(.*?)</div>', html, re.DOTALL)
+        self.assertTrue(summary_match)
+        summary_clean = re.sub(r'<[^>]+>', ' ', summary_match.group(1))
+        # Lead paragraph words
+        lead_match = re.search(r'<p class=["\']answer-summary-lead["\'][^>]*>(.*?)</p>', html, re.DOTALL)
+        self.assertTrue(lead_match)
+        lead_words = len(re.sub(r'<[^>]+>', ' ', lead_match.group(1)).split())
+        self.assertGreaterEqual(lead_words, 40)
+        self.assertLessEqual(lead_words, 60)
+
+        # Visible Last Updated date
+        self.assertIn('Last updated:', summary_match.group(1))
+
+        # Robots meta tag
+        self.assertIn('<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1">', html)
+
+    def test_llms_txt_returns_200_text_plain(self):
+        response = self.client.get('/llms.txt')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('text/plain', response['Content-Type'])
+        content = response.content.decode('utf-8')
+        self.assertIn('# Sitewright', content)
+        self.assertIn('## Site Summary', content)
+        self.assertIn('## Services', content)
+        self.assertIn('## Pricing', content)
+        self.assertIn('## Location', content)
+        self.assertIn('Ahmedabad', content)
+        self.assertIn('## Key URLs', content)
+
+    def test_robots_txt_lists_ai_bots_and_sitemap(self):
+        response = self.client.get('/robots.txt')
+        self.assertEqual(response.status_code, 200)
+        self.assertIn('text/plain', response['Content-Type'])
+        content = response.content.decode('utf-8')
+
+        ai_bots = [
+            'GPTBot',
+            'OAI-SearchBot',
+            'ChatGPT-User',
+            'ClaudeBot',
+            'Claude-SearchBot',
+            'PerplexityBot',
+            'Google-Extended',
+            'Applebot-Extended',
+        ]
+        for bot in ai_bots:
+            self.assertIn(f'User-agent: {bot}', content)
+
+        self.assertIn('Disallow: /portal-hq/', content)
+        self.assertIn('Sitemap: https://sitewright.in/sitemap.xml', content)
+
+    def test_landing_pages_exist_and_meet_requirements(self):
+        from core.models import LandingPage
+
+        slugs = [
+            'website-developer-ahmedabad',
+            'whatsapp-automation-for-business',
+            'clinic-website-development',
+            'restaurant-website-development',
+            'coaching-class-website-development',
+        ]
+        for slug in slugs:
+            url = f'/{slug}/'
+            response = self.client.get(url)
+            self.assertEqual(response.status_code, 200, f'Landing page {url} returned {response.status_code}')
+            html = response.content.decode('utf-8')
+
+            # Check title <= 60 chars
+            title_match = re.search(r'<title>(.*?)</title>', html)
+            self.assertTrue(title_match)
+            self.assertLessEqual(len(title_match.group(1).strip()), 60)
+
+            # Check meta description 150-160 chars
+            desc_match = re.search(r'<meta name=["\']description["\'] content=["\']([^"\']+)["\']', html)
+            self.assertTrue(desc_match)
+            desc_len = len(desc_match.group(1).strip())
+            self.assertGreaterEqual(desc_len, 150, f'{slug} meta desc too short ({desc_len})')
+            self.assertLessEqual(desc_len, 160, f'{slug} meta desc too long ({desc_len})')
+
+            # Check strictly one H1
+            h1_matches = re.findall(r'<h1[^>]*>(.*?)</h1>', html, re.DOTALL)
+            self.assertEqual(len(h1_matches), 1)
+
+            # Check 600+ words in content
+            lp = LandingPage.objects.get(slug=slug)
+            clean_content = re.sub(r'<[^>]+>', ' ', lp.content)
+            word_count = len(clean_content.split())
+            self.assertGreaterEqual(word_count, 600, f'{slug} content has only {word_count} words')
+
+            # Check FAQ block present
+            self.assertIn('Frequently Asked Questions', html)
+
+            # Check BreadcrumbList in JSON-LD
+            self.assertIn('"@type": "BreadcrumbList"', html)
+
+    def test_blog_pages_exist_and_meet_requirements(self):
+        from core.models import BlogPost
+
+        # Test index
+        res_idx = self.client.get('/blog/')
+        self.assertEqual(res_idx.status_code, 200)
+
+        # Test 3 articles
+        posts = BlogPost.objects.filter(is_published=True)
+        self.assertEqual(posts.count(), 3)
+        for post in posts:
+            res = self.client.get(post.get_absolute_url())
+            self.assertEqual(res.status_code, 200)
+            html = res.content.decode('utf-8')
+
+            # Title <= 60 chars (inside title tag)
+            self.assertLessEqual(len(post.title), 60)
+
+            # Meta description 150-160 chars
+            desc_len = len(post.meta_description)
+            self.assertGreaterEqual(desc_len, 150)
+            self.assertLessEqual(desc_len, 160)
+
+            # 600+ words
+            clean_content = re.sub(r'<[^>]+>', ' ', post.content)
+            word_count = len(clean_content.split())
+            self.assertGreaterEqual(word_count, 600)
+
+            # BlogPosting in schema
+            self.assertIn('"@type": "BlogPosting"', html)
+
+    def test_sitemap_xml_includes_all_pages_and_lastmod(self):
+        response = self.client.get('/sitemap.xml')
+        self.assertEqual(response.status_code, 200)
+        xml = response.content.decode('utf-8')
+        self.assertIn('<lastmod>', xml)
+
+        # Check landing pages
+        self.assertIn('/website-developer-ahmedabad/', xml)
+        self.assertIn('/whatsapp-automation-for-business/', xml)
+        self.assertIn('/clinic-website-development/', xml)
+        self.assertIn('/restaurant-website-development/', xml)
+        self.assertIn('/coaching-class-website-development/', xml)
+
+        # Check blog
+        self.assertIn('/blog/', xml)
+        self.assertIn('/blog/website-development-cost-in-ahmedabad/', xml)
+        self.assertIn('/blog/why-whatsapp-automation-beats-contact-forms/', xml)
+        self.assertIn('/blog/local-seo-guide-for-ahmedabad-businesses/', xml)
+
+    def test_og_image_and_performance_attributes(self):
+        # 1. OG Image exists with 1200x630
+        from PIL import Image
+        og_path = os.path.join(settings.BASE_DIR, 'static', 'core', 'img', 'og-image.png')
+        self.assertTrue(os.path.exists(og_path))
+        with Image.open(og_path) as img:
+            self.assertEqual(img.size, (1200, 630))
+
+        # 2. Image attributes on home page
+        response = self.client.get('/')
+        html = response.content.decode('utf-8')
+        img_tags = re.findall(r'<img[^>]+>', html)
+        for tag in img_tags:
+            self.assertIn('width=', tag)
+            self.assertIn('height=', tag)
+            self.assertIn('loading="lazy"', tag)
+
+        # 3. Chatzy is loaded via deferred script
+        self.assertNotIn('<link rel="stylesheet" href="https://chatzy-kb-store.s3.amazonaws.com', html)
+        self.assertIn('chatzyLoaded', html)
+
 
 
 

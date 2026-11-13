@@ -105,3 +105,56 @@ class QuoteRequest(models.Model):
     def __str__(self):
         biz = f" ({self.business_name})" if self.business_name else ""
         return f"{self.name}{biz} - {self.plan} [{self.created_at.strftime('%d %b %Y')}]"
+
+
+class LandingPage(models.Model):
+    slug = models.SlugField(max_length=120, unique=True, help_text="URL slug e.g. website-developer-ahmedabad")
+    title = models.CharField(max_length=70, help_text="SEO title (<=60 chars)")
+    meta_description = models.CharField(max_length=170, help_text="Meta description (150-160 chars)")
+    h1 = models.CharField(max_length=200, help_text="Primary H1 on page")
+    badge = models.CharField(max_length=100, default="Ahmedabad, India")
+    answer_lead = models.TextField(blank=True, help_text="40-60 word answer-first direct summary")
+    content = models.TextField(help_text="Detailed HTML content (600+ words)")
+    faq_data = models.JSONField(default=list, blank=True, help_text="List of {question, answer} dicts")
+    target_plan = models.CharField(max_length=50, default="Business")
+    cta_title = models.CharField(max_length=200, default="Ready to build your website?")
+    cta_sub = models.CharField(max_length=255, default="Get a free concept outline and fixed quote within 24 hours.")
+    is_published = models.BooleanField(default=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['slug']
+        verbose_name = 'Landing Page'
+        verbose_name_plural = 'Landing Pages'
+
+    def __str__(self):
+        return f"{self.title} (/{self.slug}/)"
+
+    def get_absolute_url(self):
+        return f"/{self.slug}/"
+
+
+class BlogPost(models.Model):
+    title = models.CharField(max_length=200, help_text="Article title (<=60 chars)")
+    slug = models.SlugField(max_length=200, unique=True)
+    meta_description = models.CharField(max_length=170, help_text="Meta description (150-160 chars)")
+    h1 = models.CharField(max_length=200, blank=True)
+    excerpt = models.TextField(blank=True, help_text="Short lead summary")
+    content = models.TextField(help_text="Full article HTML content (600+ words)")
+    category = models.CharField(max_length=100, default="Web Development")
+    read_time = models.CharField(max_length=50, default="5 min read")
+    is_published = models.BooleanField(default=True)
+    published_date = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-published_date']
+        verbose_name = 'Blog Post'
+        verbose_name_plural = 'Blog Posts'
+
+    def __str__(self):
+        return self.title
+
+    def get_absolute_url(self):
+        return f"/blog/{self.slug}/"

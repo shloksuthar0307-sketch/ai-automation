@@ -1,0 +1,293 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block title %}{{ page.title }}{% endblock %}
+{% block meta_description %}{{ page.meta_description }}{% endblock %}
+
+{% block og_title %}{{ page.title }}{% endblock %}
+{% block og_desc %}{{ page.meta_description }}{% endblock %}
+
+{% block tw_title %}{{ page.title }}{% endblock %}
+{% block tw_desc %}{{ page.meta_description }}{% endblock %}
+
+{% block structured_data %}
+<script type="application/ld+json" nonce="{{ request.csp_nonce }}">
+{{ schema_json_ld|safe }}
+</script>
+{% endblock %}
+
+{% block extra_css %}
+<style nonce="{{ request.csp_nonce }}">
+.landing-hero {
+  padding: 140px 0 40px;
+  max-width: 860px;
+  margin: 0 auto;
+}
+.breadcrumbs-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+}
+.breadcrumbs-bar a {
+  color: var(--muted-light);
+  text-decoration: none;
+}
+.breadcrumbs-bar a:hover {
+  color: #ffffff;
+}
+.breadcrumbs-sep {
+  color: var(--line);
+}
+.landing-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 14px;
+  background: rgba(16, 185, 129, 0.1);
+  border: 1px solid rgba(16, 185, 129, 0.25);
+  border-radius: 999px;
+  color: #34d399;
+  font-size: 12.5px;
+  font-weight: 600;
+  margin-bottom: 18px;
+}
+.landing-h1 {
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-size: clamp(32px, 5vw, 48px);
+  font-weight: 800;
+  line-height: 1.15;
+  color: var(--ink-heading, #ffffff);
+  margin: 0 0 20px 0;
+  letter-spacing: -0.02em;
+}
+.landing-answer-card {
+  padding: 18px 22px;
+  background: rgba(24, 24, 27, 0.7);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-left: 3px solid #10b981;
+  border-radius: 12px;
+  margin-bottom: 28px;
+}
+.landing-answer-text {
+  font-size: 16px;
+  line-height: 1.6;
+  color: #f4f4f5;
+  margin: 0 0 10px 0;
+}
+.landing-meta-row {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  font-size: 12.5px;
+  color: #a1a1aa;
+  flex-wrap: wrap;
+}
+.landing-hero-actions {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  margin-top: 24px;
+}
+.landing-main-wrap {
+  max-width: 860px;
+  margin: 0 auto;
+  padding: 30px 0 80px;
+}
+.landing-rich-body {
+  font-size: 16.5px;
+  line-height: 1.75;
+  color: #d4d4d8;
+}
+.landing-rich-body h2 {
+  font-family: var(--font-display, 'Syne', sans-serif);
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 42px 0 16px;
+  letter-spacing: -0.01em;
+}
+.landing-rich-body h3 {
+  font-size: 20px;
+  font-weight: 600;
+  color: #ffffff;
+  margin: 28px 0 12px;
+}
+.landing-rich-body p {
+  margin: 0 0 18px;
+}
+.landing-rich-body ul {
+  margin: 0 0 24px 20px;
+  padding: 0;
+}
+.landing-rich-body li {
+  margin-bottom: 10px;
+}
+.landing-rich-body a {
+  color: #34d399;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.landing-rich-body a:hover {
+  color: #6ee7b7;
+}
+.landing-faq-section {
+  margin-top: 50px;
+  padding-top: 30px;
+  border-top: 1px solid var(--line, #27272a);
+}
+.landing-faq-section h2 {
+  font-size: 26px;
+  margin-bottom: 24px;
+  color: #ffffff;
+}
+.landing-other-services {
+  margin-top: 60px;
+  padding: 24px;
+  background: rgba(24, 24, 27, 0.5);
+  border: 1px solid var(--line, #27272a);
+  border-radius: 14px;
+}
+.landing-other-services h3 {
+  font-size: 18px;
+  color: #ffffff;
+  margin: 0 0 14px;
+}
+.other-services-grid {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.other-service-pill {
+  padding: 8px 14px;
+  border: 1px solid var(--line, #27272a);
+  border-radius: 8px;
+  color: #e4e4e7;
+  text-decoration: none;
+  font-size: 13.5px;
+  background: #18181b;
+  transition: all 0.2s ease;
+}
+.other-service-pill:hover {
+  border-color: #10b981;
+  color: #ffffff;
+}
+.landing-cta-box {
+  margin-top: 50px;
+  padding: 36px 30px;
+  background: linear-gradient(135deg, rgba(24, 24, 27, 0.9), rgba(16, 185, 129, 0.08));
+  border: 1px solid rgba(16, 185, 129, 0.3);
+  border-radius: 16px;
+  text-align: center;
+}
+.landing-cta-box h3 {
+  font-size: 26px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px;
+}
+.landing-cta-box p {
+  color: #a1a1aa;
+  font-size: 15.5px;
+  max-width: 600px;
+  margin: 0 auto 24px;
+}
+.landing-cta-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+}
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="wrap">
+  <!-- Breadcrumbs -->
+  <div class="breadcrumbs-bar" style="padding-top: 100px;">
+    <a href="{% url 'core:index' %}">Home</a>
+    <span class="breadcrumbs-sep">/</span>
+    <span>{{ page.title }}</span>
+  </div>
+
+  <!-- Hero Section -->
+  <header class="landing-hero" style="padding-top: 20px;">
+    <div class="landing-badge">
+      <span class="pulse-dot"></span> {{ page.badge }}
+    </div>
+    <h1 class="landing-h1">{{ page.h1 }}</h1>
+
+    {% if page.answer_lead %}
+    <div class="landing-answer-card">
+      <p class="landing-answer-text">{{ page.answer_lead }}</p>
+      <div class="landing-meta-row">
+        <span style="color: #34d399; font-weight: 600;">✓ Direct AEO Answer</span>
+        <span>Last updated: <time datetime="{{ page.updated_at|date:'Y-m-d' }}">{{ page.updated_at|date:"F Y" }}</time></span>
+        <span>📍 Ahmedabad, Gujarat</span>
+      </div>
+    </div>
+    {% endif %}
+
+    <div class="landing-hero-actions">
+      <a class="btn btn-primary btn-lg" href="{% url 'core:index' %}#contact">Get a Fixed Quote</a>
+      {% if whatsapp_number %}
+      <a class="btn btn-ghost btn-lg wa-track-link" href="{{ whatsapp_url }}" target="_blank" rel="noopener">Chat on WhatsApp ↗</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- Main Body Content (600+ words) -->
+  <main class="landing-main-wrap">
+    {{ page.content|safe }}
+
+    <!-- FAQ Accordion Block -->
+    {% if page.faq_data %}
+    <section class="landing-faq-section" id="faq">
+      <h2>Frequently Asked Questions</h2>
+      <div class="faq-box">
+        {% for item in page.faq_data %}
+        <div class="faq-spring-item {% if forloop.first %}open{% endif %}">
+          <button class="faq-spring-btn" type="button" id="lfaq-btn-{{ forloop.counter }}" aria-expanded="{% if forloop.first %}true{% else %}false{% endif %}" aria-controls="lfaq-body-{{ forloop.counter }}">
+            <span>{{ item.question }}</span>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
+          <div class="faq-spring-body" id="lfaq-body-{{ forloop.counter }}" role="region" aria-labelledby="lfaq-btn-{{ forloop.counter }}">
+            <p>{{ item.answer }}</p>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Internal Linking Matrix -->
+    {% if other_services %}
+    <section class="landing-other-services">
+      <h3>Explore Other Web Development Services in Ahmedabad:</h3>
+      <div class="other-services-grid">
+        {% for s in other_services %}
+        <a class="other-service-pill" href="{{ s.get_absolute_url }}">{{ s.title }} →</a>
+        {% endfor %}
+        <a class="other-service-pill" href="{% url 'core:blog_index' %}">Web Strategy Blog →</a>
+        <a class="other-service-pill" href="{% url 'core:index' %}#pricing">Pricing Plans (₹7k - ₹45k) →</a>
+      </div>
+    </section>
+    {% endif %}
+
+    <!-- Call to Action -->
+    <div class="landing-cta-box">
+      <h3>{{ page.cta_title }}</h3>
+      <p>{{ page.cta_sub }}</p>
+      <div class="landing-cta-actions">
+        <a class="btn btn-primary btn-lg" href="{% url 'core:index' %}#contact">Get a Free Concept &amp; Quote</a>
+        {% if whatsapp_number %}
+        <a class="btn btn-ghost btn-lg wa-track-link" href="{{ whatsapp_url }}" target="_blank" rel="noopener">WhatsApp Direct Chat ↗</a>
+        {% endif %}
+      </div>
+    </div>
+  </main>
+</div>
+{% endblock %}
+

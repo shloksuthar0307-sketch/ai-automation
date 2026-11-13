@@ -5,11 +5,13 @@ from django.contrib import admin
 from django.contrib.sitemaps.views import sitemap
 from django.urls import path, include
 
-from core.sitemaps import StaticViewSitemap
-from core.views import robots_txt_view
+from core.sitemaps import StaticViewSitemap, LandingPageSitemap, BlogPostSitemap
+from core.views import robots_txt_view, llms_txt_view
 
 sitemaps = {
     'static': StaticViewSitemap,
+    'landing': LandingPageSitemap,
+    'blog': BlogPostSitemap,
 }
 
 admin.site.site_header = "Sitewright Administration"
@@ -22,6 +24,7 @@ admin_url = f"{admin_url_path}/" if admin_url_path else "admin/"
 urlpatterns = [
     path(admin_url, admin.site.urls),
     path('robots.txt', robots_txt_view, name='robots_txt'),
+    path('llms.txt', llms_txt_view, name='llms_txt'),
     path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='django.contrib.sitemaps.views.sitemap'),
     path('', include('core.urls')),
 ]
